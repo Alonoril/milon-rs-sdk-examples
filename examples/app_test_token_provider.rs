@@ -163,6 +163,8 @@ async fn transfer(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     // wallet-provider
     let provider = provider.with_wallet_filler(WalletFiller::new(holder_wallet));
     // let to = Address::from_bs58("JCSS25kd9r7ipG1xXeA4txEqT7m")?;
+    let res = provider.claim_faucet_with_cooldown_remaining().await?;
+    time::sleep(Duration::from_secs(1)).await;
 
     let to_signer = local_ed25519_signer(2)?;
     let to = to_signer.address();
