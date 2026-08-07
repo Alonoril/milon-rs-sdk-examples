@@ -1550,6 +1550,7 @@ version = "0.1.0"
 dependencies = [
  "ahash",
  "blake3",
+ "inventory",
  "milon_config",
  "milon_crypto",
  "milon_derive",
