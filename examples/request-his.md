@@ -1,5 +1,85 @@
 
 ### app_test_account_provider.rs
+### multisig on-chain
+```text
+seed[1]bytes->public_key: [138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]
+seed[1]hex->public_key: 8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c
+seed[1]bs58->public_key: AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9
+seed[1]bs58->address: 214RxzUxqRR1P4M5Hjw5mstr1Xs8
+set_signer_weight list_signers = (Account { bitmap: Bitmap64(13), weight: 8, threshold: 5 }, [(AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9, 0, 3), (mBKqcnGotbsSb5vNrdyhzZ5EhqZdids9QYiTRckvi7v, 2, 2), (AoVsGaj8MSJ6xwKxfFxo9iZWH3enC8RRTXKH2fx2F8os, 3, 3)])
+seed[1]bytes->public_key: [138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]
+seed[1]hex->public_key: 8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c
+seed[1]bs58->public_key: AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9
+seed[1]bs58->address: 214RxzUxqRR1P4M5Hjw5mstr1Xs8
+seed[12]bytes->public_key: [11, 81, 58, 217, 180, 146, 64, 21, 202, 9, 2, 237, 7, 144, 68, 211, 172, 93, 190, 194, 48, 111, 6, 148, 140, 16, 218, 142, 182, 227, 159, 45]
+seed[12]hex->public_key: 0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d
+seed[12]bs58->public_key: mBKqcnGotbsSb5vNrdyhzZ5EhqZdids9QYiTRckvi7v
+seed[12]bs58->address: JCSS25kd9r7ipG1xXeA4txEqT7m
+seed[13]bytes->public_key: [145, 162, 138, 11, 116, 56, 21, 147, 164, 217, 70, 149, 121, 32, 137, 38, 175, 200, 173, 130, 200, 131, 155, 118, 68, 53, 155, 158, 186, 154, 75, 58]
+seed[13]hex->public_key: 91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a
+seed[13]bs58->public_key: AoVsGaj8MSJ6xwKxfFxo9iZWH3enC8RRTXKH2fx2F8os
+seed[13]bs58->address: 36HvDetMXq3hhnaS72ENDvcUg7zd
+seed[1]bytes->public_key: [138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]
+seed[1]hex->public_key: 8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c
+seed[1]bs58->public_key: AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9
+seed[1]bs58->address: 214RxzUxqRR1P4M5Hjw5mstr1Xs8
+seed[12]bytes->public_key: [11, 81, 58, 217, 180, 146, 64, 21, 202, 9, 2, 237, 7, 144, 68, 211, 172, 93, 190, 194, 48, 111, 6, 148, 140, 16, 218, 142, 182, 227, 159, 45]
+seed[12]hex->public_key: 0b513ad9b4924015ca0902ed079044d3ac5dbec2306f06948c10da8eb6e39f2d
+seed[12]bs58->public_key: mBKqcnGotbsSb5vNrdyhzZ5EhqZdids9QYiTRckvi7v
+seed[12]bs58->address: JCSS25kd9r7ipG1xXeA4txEqT7m
+seed[13]bytes->public_key: [145, 162, 138, 11, 116, 56, 21, 147, 164, 217, 70, 149, 121, 32, 137, 38, 175, 200, 173, 130, 200, 131, 155, 118, 68, 53, 155, 158, 186, 154, 75, 58]
+seed[13]hex->public_key: 91a28a0b74381593a4d9469579208926afc8ad82c8839b7644359b9eba9a4b3a
+seed[13]bs58->public_key: AoVsGaj8MSJ6xwKxfFxo9iZWH3enC8RRTXKH2fx2F8os
+seed[13]bs58->address: 36HvDetMXq3hhnaS72ENDvcUg7zd
+seed[2]bytes->public_key: [129, 57, 119, 14, 168, 125, 23, 95, 86, 163, 84, 102, 195, 76, 126, 204, 203, 141, 138, 145, 180, 238, 55, 162, 93, 246, 15, 91, 143, 201, 179, 148]
+seed[2]hex->public_key: 8139770ea87d175f56a35466c34c7ecccb8d8a91b4ee37a25df60f5b8fc9b394
+seed[2]bs58->public_key: 9hSR6S7WPtxmTojgo6GG3k4yDPecgJY292j7xrsUGWBu
+seed[2]bs58->address: 3WoBgRDRzQ9omYBfXF8H6yFUaKWA
+claim_faucet result: None
+submit_after_vote tx_hash: GFyXTGTQjqxvXwLWFk3u8DeozGZTcCF9EkEKYT2W1wMH
+transaction history:
+  stamp: 1786072682026
+  payer_signature_index: Some(1)
+  signature_count: 2
+  tx_id: 00000000000003aa00000000
+  tx_hash: GFyXTGTQjqxvXwLWFk3u8DeozGZTcCF9EkEKYT2W1wMH
+  state: 1 (success)
+  gas_charged: 3430
+  error: None
+  instruction_count: 1
+    instruction[0]: {"app_id":1,"app_name":"account","instruction_name":"SetSignerWeight","token":{"method":"SetSignerWeight","fields":[{"name":"owner","value":"214RxzUxqRR1P4M5Hjw5mstr1Xs8"},{"name":"index","value":2},{"name":"weight","value":4}]}}
+  access_resource_count: 7
+    access[0].resource_id: FixedBytes([1, 145, 1, 156, 242, 205, 209, 11, 82, 96, 179, 102, 5, 33, 230, 158, 107, 135])
+      access[0].first_snapshot: inline DecodedResource { name: "Account", type_tag: 17390915333023917609, token: Struct { name: "Account", fields: [NamedToken { name: "bitmap", value: Bitmap64(Bitmap64(13)) }, NamedToken { name: "weight", value: U8(8) }, NamedToken { name: "threshold", value: U8(5) }] } }
+      access[0].last_written: inline DecodedResource { name: "Account", type_tag: 17390915333023917609, token: Struct { name: "Account", fields: [NamedToken { name: "bitmap", value: Bitmap64(Bitmap64(13)) }, NamedToken { name: "weight", value: U8(10) }, NamedToken { name: "threshold", value: U8(5) }] } }
+    access[1].resource_id: FixedBytes([1, 13, 179, 94, 132, 52, 216, 221, 106, 134, 237, 0, 173, 43, 158, 165, 185, 49])
+      access[1].first_snapshot: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(13)) }
+      access[1].last_written: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(0)) }
+    access[2].resource_id: FixedBytes([1, 183, 83, 195, 3, 10, 234, 195, 18, 118, 52, 221, 233, 217, 224, 207, 233, 36])
+      access[2].first_snapshot: inline DecodedResource { name: "AccountSigner", type_tag: 3011419475387808271, token: Struct { name: "AccountSigner", fields: [NamedToken { name: "pubkey", value: PublicKey(mBKqcnGotbsSb5vNrdyhzZ5EhqZdids9QYiTRckvi7v) }, NamedToken { name: "weight", value: U8(2) }] } }
+      access[2].last_written: inline DecodedResource { name: "AccountSigner", type_tag: 3011419475387808271, token: Struct { name: "AccountSigner", fields: [NamedToken { name: "pubkey", value: PublicKey(mBKqcnGotbsSb5vNrdyhzZ5EhqZdids9QYiTRckvi7v) }, NamedToken { name: "weight", value: U8(4) }] } }
+    access[3].resource_id: FixedBytes([1, 214, 214, 194, 243, 193, 37, 116, 218, 98, 213, 230, 134, 16, 3, 17, 151, 88])
+      access[3].first_snapshot: inline DecodedResource { name: "VoteMeta", type_tag: 2370275984328722986, token: Struct { name: "VoteMeta", fields: [NamedToken { name: "intent_hash", value: Array([U8(189), U8(91), U8(186), U8(228), U8(182), U8(139), U8(149), U8(254), U8(220), U8(91), U8(128), U8(72), U8(128), U8(66), U8(130), U8(210), U8(187), U8(40), U8(187), U8(187), U8(204), U8(7), U8(125), U8(133), U8(59), U8(203), U8(54), U8(227), U8(148), U8(29), U8(127), U8(138)]) }, NamedToken { name: "expires_at_ms", value: U64(1786080122807) }, NamedToken { name: "source_tx_hash", value: Array([U8(95), U8(246), U8(236), U8(220), U8(244), U8(179), U8(140), U8(229), U8(201), U8(48), U8(50), U8(217), U8(98), U8(167), U8(49), U8(33), U8(210), U8(75), U8(133), U8(150), U8(29), U8(251), U8(65), U8(179), U8(58), U8(204), U8(169), U8(144), U8(144), U8(73), U8(20), U8(63)]) }] } }
+      access[3].last_written: inline DecodedResource { name: "VoteMeta", type_tag: 2370275984328722986, token: Struct { name: "VoteMeta", fields: [NamedToken { name: "intent_hash", value: Array([U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0)]) }, NamedToken { name: "expires_at_ms", value: U64(0) }, NamedToken { name: "source_tx_hash", value: Array([U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0)]) }] } }
+    access[4].resource_id: FixedBytes([1, 199, 113, 176, 224, 77, 15, 12, 144, 23, 186, 216, 180, 127, 81, 3, 157, 131])
+      access[4].first_snapshot: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(2377900603251621896)) }
+      access[4].last_written: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(72057594037927944)) }
+    access[5].resource_id: FixedBytes([2, 34, 137, 224, 68, 189, 172, 80, 49, 188, 203, 77, 4, 136, 157, 135, 66, 25])
+      access[5].first_snapshot: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(9999835319) }
+      access[5].last_written: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(9999831889) }
+    access[6].resource_id: FixedBytes([2, 34, 219, 135, 88, 254, 179, 118, 85, 215, 237, 148, 129, 233, 50, 129, 207, 16])
+      access[6].first_snapshot: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(25816358) }
+      access[6].last_written: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(25819788) }
+  event_count: 0
+>>>>>>multisig_on_chain res: Ok(())
+seed[1]bytes->public_key: [138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]
+seed[1]hex->public_key: 8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c
+seed[1]bs58->public_key: AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9
+seed[1]bs58->address: 214RxzUxqRR1P4M5Hjw5mstr1Xs8
+set_signer_weight list_signers = (Account { bitmap: Bitmap64(13), weight: 10, threshold: 5 }, [(AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9, 0, 3), (mBKqcnGotbsSb5vNrdyhzZ5EhqZdids9QYiTRckvi7v, 2, 4), (AoVsGaj8MSJ6xwKxfFxo9iZWH3enC8RRTXKH2fx2F8os, 3, 3)])
+
+```
+
 ```text
 # vote_init and vote
 seed[1]bytes->public_key: [138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]
