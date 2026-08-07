@@ -14,9 +14,9 @@ use tokio::time;
 
 const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
 const OWNER_SIGNER_SEED: u8 = 100;
-const ZERO_VOTE_SIGNER_SEED: u8 = 101;
-const FIRST_VOTE_SIGNER_SEED: u8 = 102;
-const SECOND_VOTE_SIGNER_SEED: u8 = 103;
+const IDX1_VOTE_SIGNER_SEED: u8 = 101;
+const IDX2_VOTE_SIGNER_SEED: u8 = 102;
+const IDX3_VOTE_SIGNER_SEED: u8 = 103;
 const RELAYER_SIGNER_SEED: u8 = 200;
 
 struct VoteIntent {
@@ -113,14 +113,14 @@ async fn submit(
     intent: &VoteIntent,
 ) -> Result<(), Box<dyn Error>> {
     let account_signer = local_ed25519_signer(OWNER_SIGNER_SEED)?;
-    let first_vote_signer = local_ed25519_signer(FIRST_VOTE_SIGNER_SEED)?;
-    let second_vote_signer = local_ed25519_signer(SECOND_VOTE_SIGNER_SEED)?;
+    let idx2_vote_signer = local_ed25519_signer(IDX2_VOTE_SIGNER_SEED)?;
+    let idx3_vote_signer = local_ed25519_signer(IDX3_VOTE_SIGNER_SEED)?;
     let relayer_signer = local_ed25519_signer(RELAYER_SIGNER_SEED)?;
     let payer = relayer_signer.address();
     let slots = vec![
         MultisigSlot::new(0, account_signer),
-        MultisigSlot::with_weight(2, 2, first_vote_signer),
-        MultisigSlot::with_weight(3, 3, second_vote_signer),
+        MultisigSlot::with_weight(2, 2, idx2_vote_signer),
+        MultisigSlot::with_weight(3, 3, idx3_vote_signer),
     ];
     let mut payer_wallet = LocalWallet::new(relayer_signer);
     payer_wallet.register_multisig(owner, 5, slots)?;
@@ -168,7 +168,7 @@ async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let first_vote_ready = collect_vote(
         rpc,
         owner,
-        vote_wallet(owner, FIRST_VOTE_SIGNER_SEED, 2, 2)?,
+        vote_wallet(owner, IDX2_VOTE_SIGNER_SEED, 2, 2)?,
         &intent,
         "first vote",
     )
@@ -180,7 +180,7 @@ async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let final_vote_ready = collect_vote(
         rpc,
         owner,
-        vote_wallet(owner, SECOND_VOTE_SIGNER_SEED, 3, 3)?,
+        vote_wallet(owner, IDX3_VOTE_SIGNER_SEED, 3, 3)?,
         &intent,
         "second vote",
     )
@@ -222,9 +222,9 @@ async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let owner_signer = local_ed25519_signer(OWNER_SIGNER_SEED)?;
     let pk0 = owner_signer.public_key().clone();
 
-    let pk1_signer = local_ed25519_signer(ZERO_VOTE_SIGNER_SEED)?;
-    let pk2_signer = local_ed25519_signer(FIRST_VOTE_SIGNER_SEED)?;
-    let pk3_signer = local_ed25519_signer(SECOND_VOTE_SIGNER_SEED)?;
+    let pk1_signer = local_ed25519_signer(IDX1_VOTE_SIGNER_SEED)?;
+    let pk2_signer = local_ed25519_signer(IDX2_VOTE_SIGNER_SEED)?;
+    let pk3_signer = local_ed25519_signer(IDX3_VOTE_SIGNER_SEED)?;
     let owner = owner_signer.address();
 
     let wallet = LocalWallet::new(owner_signer);
