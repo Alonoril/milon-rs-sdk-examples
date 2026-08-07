@@ -160,7 +160,7 @@ async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     vote_init(
         rpc,
         owner,
-        vote_wallet(owner, OWNER_SIGNER_SEED, 0, 1)?,
+        vote_wallet(owner, OWNER_SIGNER_SEED, 1, 1)?,
         &intent,
     )
     .await?;
