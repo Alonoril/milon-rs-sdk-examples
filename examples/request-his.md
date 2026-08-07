@@ -2,6 +2,59 @@
 ### app_test_account_provider.rs
 ### multisig on-chain
 ```text
+seed[100]bytes->public_key: [43, 194, 128, 11, 51, 22, 224, 9, 32, 159, 253, 117, 125, 171, 25, 204, 240, 174, 132, 188, 122, 233, 6, 84, 225, 232, 23, 18, 210, 112, 246, 83]
+seed[100]hex->public_key: 2bc2800b3316e009209ffd757dab19ccf0ae84bc7ae90654e1e81712d270f653
+seed[100]bs58->public_key: 3wpYnGqceZ8DzN3guiTd9rrYkWTwTHCChBSuo6cvkXTG
+seed[100]bs58->address: 3kF5rqXzqri92EPxKaouaDVq49Fd
+seed[200]bytes->public_key: [151, 255, 200, 131, 200, 11, 238, 114, 55, 239, 149, 217, 185, 183, 3, 212, 173, 99, 230, 10, 33, 230, 5, 134, 118, 130, 183, 91, 139, 63, 67, 3]
+seed[200]hex->public_key: 97ffc883c80bee7237ef95d9b9b703d4ad63e60a21e605867682b75b8b3f4303
+seed[200]bs58->public_key: BELn9TCk4uWEihwdgoUx8xUfd5ujL9pKrwtJCesiQAev
+seed[200]bs58->address: 3EU3GFthoEAkHZ7YobxgKH5NHM3z
+seed[101]bytes->public_key: [214, 47, 1, 106, 30, 253, 30, 79, 223, 121, 62, 180, 44, 216, 68, 113, 225, 186, 159, 12, 240, 77, 18, 135, 181, 204, 113, 246, 22, 40, 124, 184]
+seed[101]hex->public_key: d62f016a1efd1e4fdf793eb42cd84471e1ba9f0cf04d1287b5cc71f616287cb8
+seed[101]bs58->public_key: FR5pWwinRBn35GNhg7bsvw8Q13kRept2pm561DwZCQzT
+seed[101]bs58->address: 2SWaPHFpBFZJLEXuz6SwxWhBUxh3
+vote_init claim_faucet result: None
+transaction tx_hash: A9Z3fSgFpVcuf8KtPyE8vLoKdL4H1ASY9LyDVnZMCNYz
+after vote_init vote_info: (VoteMeta { intent_hash: FixedBytes([167, 3, 170, 129, 125, 101, 234, 7, 125, 34, 253, 30, 252, 1, 203, 252, 175, 187, 178, 18, 233, 197, 81, 82, 136, 147, 205, 3, 221, 30, 81, 97]), expires_at_ms: 1786190904903, source_tx_hash: FixedBytes([135, 234, 16, 48, 63, 176, 8, 173, 57, 183, 51, 40, 107, 13, 155, 179, 198, 209, 141, 28, 118, 88, 243, 234, 243, 217, 28, 198, 86, 223, 235, 107]) }, Bitmap64(2), false)
+seed[102]bytes->public_key: [52, 180, 217, 4, 49, 86, 203, 109, 207, 11, 235, 10, 41, 73, 183, 85, 156, 148, 13, 43, 203, 109, 190, 140, 83, 169, 179, 2, 120, 227, 167, 70]
+seed[102]hex->public_key: 34b4d9043156cb6dcf0beb0a2949b7559c940d2bcb6dbe8c53a9b30278e3a746
+seed[102]bs58->public_key: 4Yk9HoDSfJv9QcmJbLcXdWVgS7nfvdUqiVcvbSu8VBru
+seed[102]bs58->address: 331hA3BeRVTsVLfWcnMpoeir7qSx
+first vote claim_faucet result: None
+transaction tx_hash: EGQn13Cau5VdvyUswTA9phPGVieVCGiftbHigBvWRiFF
+after first vote vote_info: (VoteMeta { intent_hash: FixedBytes([167, 3, 170, 129, 125, 101, 234, 7, 125, 34, 253, 30, 252, 1, 203, 252, 175, 187, 178, 18, 233, 197, 81, 82, 136, 147, 205, 3, 221, 30, 81, 97]), expires_at_ms: 1786190904903, source_tx_hash: FixedBytes([135, 234, 16, 48, 63, 176, 8, 173, 57, 183, 51, 40, 107, 13, 155, 179, 198, 209, 141, 28, 118, 88, 243, 234, 243, 217, 28, 198, 86, 223, 235, 107]) }, Bitmap64(6), false)
+seed[103]bytes->public_key: [18, 164, 21, 146, 200, 183, 193, 125, 64, 89, 231, 178, 155, 97, 232, 255, 150, 199, 65, 95, 47, 128, 51, 72, 242, 240, 23, 224, 91, 158, 161, 218]
+seed[103]hex->public_key: 12a41592c8b7c17d4059e7b29b61e8ff96c7415f2f803348f2f017e05b9ea1da
+seed[103]bs58->public_key: 2FmTRNa4NTmmswmafCReLTHRTEMVEMUmzgRdBLrDRk57
+seed[103]bs58->address: 4PoZLSnuVNqeZnNxpktWnmJn4Ney
+second vote claim_faucet result: None
+transaction tx_hash: 9hDTM4dk4EJKKoMumbddWd8k1GPf61yCWmSCxBeNteEn
+after second vote vote_info: (VoteMeta { intent_hash: FixedBytes([167, 3, 170, 129, 125, 101, 234, 7, 125, 34, 253, 30, 252, 1, 203, 252, 175, 187, 178, 18, 233, 197, 81, 82, 136, 147, 205, 3, 221, 30, 81, 97]), expires_at_ms: 1786190904903, source_tx_hash: FixedBytes([135, 234, 16, 48, 63, 176, 8, 173, 57, 183, 51, 40, 107, 13, 155, 179, 198, 209, 141, 28, 118, 88, 243, 234, 243, 217, 28, 198, 86, 223, 235, 107]) }, Bitmap64(14), true)
+vote_info.ready = true; submitting voted transaction
+seed[100]bytes->public_key: [43, 194, 128, 11, 51, 22, 224, 9, 32, 159, 253, 117, 125, 171, 25, 204, 240, 174, 132, 188, 122, 233, 6, 84, 225, 232, 23, 18, 210, 112, 246, 83]
+seed[100]hex->public_key: 2bc2800b3316e009209ffd757dab19ccf0ae84bc7ae90654e1e81712d270f653
+seed[100]bs58->public_key: 3wpYnGqceZ8DzN3guiTd9rrYkWTwTHCChBSuo6cvkXTG
+seed[100]bs58->address: 3kF5rqXzqri92EPxKaouaDVq49Fd
+seed[102]bytes->public_key: [52, 180, 217, 4, 49, 86, 203, 109, 207, 11, 235, 10, 41, 73, 183, 85, 156, 148, 13, 43, 203, 109, 190, 140, 83, 169, 179, 2, 120, 227, 167, 70]
+seed[102]hex->public_key: 34b4d9043156cb6dcf0beb0a2949b7559c940d2bcb6dbe8c53a9b30278e3a746
+seed[102]bs58->public_key: 4Yk9HoDSfJv9QcmJbLcXdWVgS7nfvdUqiVcvbSu8VBru
+seed[102]bs58->address: 331hA3BeRVTsVLfWcnMpoeir7qSx
+seed[103]bytes->public_key: [18, 164, 21, 146, 200, 183, 193, 125, 64, 89, 231, 178, 155, 97, 232, 255, 150, 199, 65, 95, 47, 128, 51, 72, 242, 240, 23, 224, 91, 158, 161, 218]
+seed[103]hex->public_key: 12a41592c8b7c17d4059e7b29b61e8ff96c7415f2f803348f2f017e05b9ea1da
+seed[103]bs58->public_key: 2FmTRNa4NTmmswmafCReLTHRTEMVEMUmzgRdBLrDRk57
+seed[103]bs58->address: 4PoZLSnuVNqeZnNxpktWnmJn4Ney
+seed[200]bytes->public_key: [151, 255, 200, 131, 200, 11, 238, 114, 55, 239, 149, 217, 185, 183, 3, 212, 173, 99, 230, 10, 33, 230, 5, 134, 118, 130, 183, 91, 139, 63, 67, 3]
+seed[200]hex->public_key: 97ffc883c80bee7237ef95d9b9b703d4ad63e60a21e605867682b75b8b3f4303
+seed[200]bs58->public_key: BELn9TCk4uWEihwdgoUx8xUfd5ujL9pKrwtJCesiQAev
+seed[200]bs58->address: 3EU3GFthoEAkHZ7YobxgKH5NHM3z
+submit claim_faucet result: None
+>>>>>>multisig_on_chain res: Err(Rpc(WireStatus { status: Failed, failure: Some(ApiResp { message: "instruction 0 requires signer 3EU3GFthoEAkHZ7YobxgKH5NHM3z", code: Some(20), data: Some([0, 160, 57, 22, 135, 2, 237, 8, 206, 150, 197, 126, 34, 241, 53, 87, 135, 251, 125, 120, 205]) }) }))
+
+
+```
+
+```text
 seed[1]bytes->public_key: [138, 136, 227, 221, 116, 9, 241, 149, 253, 82, 219, 45, 60, 186, 93, 114, 202, 103, 9, 191, 29, 148, 18, 27, 243, 116, 136, 1, 180, 15, 111, 92]
 seed[1]hex->public_key: 8a88e3dd7409f195fd52db2d3cba5d72ca6709bf1d94121bf3748801b40f6f5c
 seed[1]bs58->public_key: AKnL4NNf3DGWZJS6cPknBuEGnVsV4A4m5tgebLHaRSZ9

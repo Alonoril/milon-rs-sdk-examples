@@ -1,8 +1,8 @@
 use milon_client::{
     self as sdk, AccountProviderExt, TokenProviderExt, WalletFiller, account::VoteProposal, demo,
 };
-use milon_crypto::hash32_hasher;
-use milon_idl_core::{Bitmap64 as IdlBitmap64, Method};
+use milon_crypto::{Address, hash32_hasher, secretkey::SecretKey};
+use milon_idl_core::{Bitmap64 as IdlBitmap64, Method, Signer as InstructionSigner};
 use milon_local_wallet::{LocalWallet, MultisigSlot, Signer};
 use milon_primitives::{AccountAuthorization, B256, ChainId, PackedInstruction, SigningPlan};
 use milon_provider::TransactionRequest;
@@ -26,7 +26,7 @@ struct VoteIntent {
 }
 
 impl VoteIntent {
-    fn new(ix: demo::EchoMode) -> Result<Self, Box<dyn Error>> {
+    fn new(ix: demo::InitPool) -> Result<Self, Box<dyn Error>> {
         let packed_ix = ix.pack()?;
         let proposal = VoteProposal {
             instructions: vec![packed_ix.as_slice().to_vec()],
@@ -46,7 +46,7 @@ impl VoteIntent {
 }
 
 fn vote_wallet(
-    owner: milon_crypto::Address,
+    owner: Address,
     signer_seed: u8,
     index: u8,
     weight: u8,
@@ -107,11 +107,7 @@ async fn collect_vote(
     Ok(vote_info.2)
 }
 
-async fn submit(
-    rpc: &DemoRpc,
-    owner: milon_crypto::Address,
-    intent: &VoteIntent,
-) -> Result<(), Box<dyn Error>> {
+async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<(), Box<dyn Error>> {
     let account_signer = local_ed25519_signer(OWNER_SIGNER_SEED)?;
     let idx2_vote_signer = local_ed25519_signer(IDX2_VOTE_SIGNER_SEED)?;
     let idx3_vote_signer = local_ed25519_signer(IDX3_VOTE_SIGNER_SEED)?;
@@ -122,8 +118,9 @@ async fn submit(
         MultisigSlot::with_weight(2, 2, idx2_vote_signer),
         MultisigSlot::with_weight(3, 3, idx3_vote_signer),
     ];
-    let mut payer_wallet = LocalWallet::new(relayer_signer);
+    let mut payer_wallet = LocalWallet::new(local_ed25519_signer(255)?);
     payer_wallet.register_multisig(owner, 5, slots)?;
+    payer_wallet.register_signer(relayer_signer)?;
     let provider = rpc
         .provider
         .with_wallet_filler(WalletFiller::new(payer_wallet));
@@ -134,9 +131,8 @@ async fn submit(
         time::sleep(Duration::from_secs(1)).await;
     }
 
-    let plan = SigningPlan::new(payer)
-        .authorize(AccountAuthorization::new(owner, vec![0]))
-        .authorize(AccountAuthorization::new(payer, Vec::new()).with_payer());
+    let plan =
+        SigningPlan::new(payer).authorize(AccountAuthorization::new(payer, vec![0]).with_payer());
     let request = TransactionRequest::new(vec![intent.packed_ix.clone()])?
         .with_payer(payer)
         .with_signing_plan(plan);
@@ -152,43 +148,47 @@ async fn submit(
 async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let owner_signer = local_ed25519_signer(OWNER_SIGNER_SEED)?;
     let owner = owner_signer.address();
-    let intent = VoteIntent::new(demo::EchoMode {
-        mode: demo::DemoMode::Three { 0: 100, 1: -100 },
+
+    let pool_signer = local_ed25519_signer(RELAYER_SIGNER_SEED)?;
+    let pool = pool_signer.address();
+    let intent = VoteIntent::new(demo::InitPool {
+        pool: InstructionSigner::new(pool),
+        label: "idl app demo pool".to_owned(),
     })?;
     debug_assert_eq!(intent.intent_hash, intent.recompute_hash());
 
-    vote_init(
-        rpc,
-        owner,
-        vote_wallet(owner, OWNER_SIGNER_SEED, 1, 1)?,
-        &intent,
-    )
-    .await?;
-
-    let first_vote_ready = collect_vote(
-        rpc,
-        owner,
-        vote_wallet(owner, IDX2_VOTE_SIGNER_SEED, 2, 2)?,
-        &intent,
-        "first vote",
-    )
-    .await?;
-    if first_vote_ready {
-        return Err("vote_info became ready after only one additional vote".into());
-    }
-
-    let final_vote_ready = collect_vote(
-        rpc,
-        owner,
-        vote_wallet(owner, IDX3_VOTE_SIGNER_SEED, 3, 3)?,
-        &intent,
-        "second vote",
-    )
-    .await?;
-    if !final_vote_ready {
-        return Err("vote_info.ready is false after collecting two votes".into());
-    }
-    println!("vote_info.ready = true; submitting voted transaction");
+    // vote_init(
+    //     rpc,
+    //     owner,
+    //     vote_wallet(owner, IDX1_VOTE_SIGNER_SEED, 1, 1)?,
+    //     &intent,
+    // )
+    // .await?;
+    //
+    // let first_vote_ready = collect_vote(
+    //     rpc,
+    //     owner,
+    //     vote_wallet(owner, IDX2_VOTE_SIGNER_SEED, 2, 2)?,
+    //     &intent,
+    //     "first vote",
+    // )
+    // .await?;
+    // if first_vote_ready {
+    //     return Err("vote_info became ready after only one additional vote".into());
+    // }
+    //
+    // let final_vote_ready = collect_vote(
+    //     rpc,
+    //     owner,
+    //     vote_wallet(owner, IDX3_VOTE_SIGNER_SEED, 3, 3)?,
+    //     &intent,
+    //     "second vote",
+    // )
+    // .await?;
+    // if !final_vote_ready {
+    //     return Err("vote_info.ready is false after collecting two votes".into());
+    // }
+    // println!("vote_info.ready = true; submitting voted transaction");
     submit(rpc, owner, &intent).await
 }
 
@@ -254,11 +254,17 @@ async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::VoteIntent;
+    use milon_client::demo;
+    use milon_crypto::{Address, secretkey::SecretKey};
+    use milon_idl_core::Signer as InstructionSigner;
 
     #[test]
     fn vote_intent_contains_one_reusable_proposal() {
-        let intent = VoteIntent::new(milon_client::demo::EchoMode {
-            mode: milon_client::demo::DemoMode::One,
+        let pool_secret = SecretKey::new_pure();
+        let pool = Address::from_public_key(&pool_secret.ed25519_public());
+        let intent = VoteIntent::new(demo::InitPool {
+            pool: InstructionSigner::new(pool),
+            label: "idl app demo pool".to_owned(),
         })
         .unwrap();
 
