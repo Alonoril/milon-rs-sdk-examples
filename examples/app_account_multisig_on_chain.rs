@@ -107,7 +107,7 @@ async fn collect_vote(
     Ok(vote_info.2)
 }
 
-async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<(), Box<dyn Error>> {
+fn build_submit_wallet(owner: Address) -> Result<(LocalWallet, Address), Box<dyn Error>> {
     let account_signer = local_ed25519_signer(OWNER_SIGNER_SEED)?;
     let idx2_vote_signer = local_ed25519_signer(IDX2_VOTE_SIGNER_SEED)?;
     let idx3_vote_signer = local_ed25519_signer(IDX3_VOTE_SIGNER_SEED)?;
@@ -118,12 +118,14 @@ async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<()
         MultisigSlot::with_weight(2, 2, idx2_vote_signer),
         MultisigSlot::with_weight(3, 3, idx3_vote_signer),
     ];
-    let mut payer_wallet = LocalWallet::new(local_ed25519_signer(255)?);
-    payer_wallet.register_multisig(owner, 5, slots)?;
-    payer_wallet.register_signer(relayer_signer)?;
-    let provider = rpc
-        .provider
-        .with_wallet_filler(WalletFiller::new(payer_wallet));
+    let mut wallet = LocalWallet::new(relayer_signer);
+    wallet.register_multisig(owner, 5, slots)?;
+    Ok((wallet, payer))
+}
+
+async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<(), Box<dyn Error>> {
+    let (wallet, payer) = build_submit_wallet(owner)?;
+    let provider = rpc.provider.with_wallet_filler(WalletFiller::new(wallet));
 
     let faucet_result = provider.claim_faucet_with_cooldown_remaining().await?;
     println!("submit claim_faucet result: {faucet_result:?}");
@@ -253,10 +255,11 @@ async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
-    use super::VoteIntent;
+    use super::{VoteIntent, build_submit_wallet};
     use milon_client::demo;
     use milon_crypto::{Address, secretkey::SecretKey};
     use milon_idl_core::Signer as InstructionSigner;
+    use milon_local_wallet::Signer;
 
     #[test]
     fn vote_intent_contains_one_reusable_proposal() {
@@ -271,5 +274,17 @@ mod tests {
         assert_eq!(intent.proposal.instructions.len(), 1);
         assert_eq!(intent.proposal.auth_bit.raw(), 1);
         assert_eq!(intent.intent_hash, intent.recompute_hash());
+    }
+
+    #[test]
+    fn submit_wallet_uses_single_signer_relayer_and_separate_vote_owner() {
+        let owner = super::local_ed25519_signer(super::OWNER_SIGNER_SEED)
+            .unwrap()
+            .address();
+        let (wallet, payer) = build_submit_wallet(owner).unwrap();
+
+        assert_eq!(wallet.default_account(), payer);
+        assert_ne!(payer, owner);
+        assert_eq!(wallet.sole_multisig_account(), Some(owner));
     }
 }
