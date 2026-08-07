@@ -1,5 +1,6 @@
 use milon_client::{
-    self as sdk, AccountProviderExt, MethodProvider, TokenProviderExt, WalletFiller, token,
+    self as sdk, AccountProviderExt, MethodProvider, TokenProviderExt, WalletFiller,
+    account::VoteProposal, token,
 };
 use milon_crypto::{Address, hash32_hasher};
 use milon_idl_core::{Bitmap64 as IdlBitmap64, Method, Signer as ChainSigner, WriteMethod};
@@ -44,10 +45,12 @@ multisig list_signers = (Account { bitmap: Bitmap64(7), weight: 6, threshold: 3 
  */
 async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let provider = &rpc.provider;
-    let account_signer = local_ed25519_signer(2)?;
-    let pk1_signer = local_ed25519_signer(21)?;
-    let pk2_signer = local_ed25519_signer(22)?;
-    let pk3_signer = local_ed25519_signer(23)?;
+    let account_signer = local_ed25519_signer(3)?;
+    let pk0 = account_signer.public_key().clone();
+
+    let pk1_signer = local_ed25519_signer(31)?;
+    let pk2_signer = local_ed25519_signer(32)?;
+    let pk3_signer = local_ed25519_signer(33)?;
     let owner = account_signer.address();
 
     let wallet = LocalWallet::new(account_signer);
@@ -55,13 +58,17 @@ async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 
     let res = provider.claim_faucet_with_cooldown_remaining().await?;
     println!("claim_faucet result: {res:?}");
+    if res.is_some() {
+        time::sleep(Duration::from_secs(1)).await;
+    }
 
     let pks = vec![
+        pk0,
         pk1_signer.public_key().clone(),
         pk2_signer.public_key().clone(),
         pk3_signer.public_key().clone(),
     ];
-    let res = provider.create_multisig(pks, vec![1, 2, 3], 3).await?;
+    let res = provider.create_multisig(pks, vec![2, 1, 2, 3], 3).await?;
     println!("create_multisig tx_hash: {res}");
     time::sleep(Duration::from_secs(1)).await;
 
@@ -243,92 +250,26 @@ async fn set_signer_weight(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// async fn vote_init(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
-//     let provider = &rpc.provider;
-//     let account_signer = local_ed25519_signer(1)?;
-//     let pk2_signer = local_ed25519_signer(12)?;
-//     let pk3_signer = local_ed25519_signer(13)?;
-//     let owner = account_signer.address();
-
-//     let slots = vec![
-//         MultisigSlot::new(0, account_signer),
-//         MultisigSlot::with_weight(2, 2, pk2_signer),
-//         MultisigSlot::with_weight(3, 3, pk3_signer),
-//     ];
-
-//     let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
-//     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
-
-//     let res = provider.claim_faucet_with_cooldown_remaining().await?;
-//     println!("claim_faucet result: {res:?}");
-//     if res.is_some() {
-//         time::sleep(Duration::from_secs(1)).await;
-//     }
-
-//     let (_, proposal, intent_hash) = build_vote_proposal(owner)?;
-
-//     let res = provider.vote_init(intent_hash, proposal).await?;
-//     println!("vote_init tx_hash: {res}");
-//     time::sleep(Duration::from_secs(1)).await;
-
-//     let vote_info = provider.vote_info(owner, intent_hash).await?;
-//     println!("vote_init vote_info = {vote_info:?}");
-
-//     Ok(())
-// }
-
-// async fn vote(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
-//     let provider = &rpc.provider;
-//     let account_signer = local_ed25519_signer(1)?;
-//     let pk2_signer = local_ed25519_signer(12)?;
-//     let pk3_signer = local_ed25519_signer(13)?;
-//     let owner = account_signer.address();
-
-//     let slots = vec![
-//         MultisigSlot::new(0, account_signer),
-//         MultisigSlot::with_weight(2, 2, pk2_signer),
-//         MultisigSlot::with_weight(3, 3, pk3_signer),
-//     ];
-//     let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
-//     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
-//     let (_, _, intent_hash) = build_vote_proposal(owner)?;
-
-//     let res = provider.claim_faucet_with_cooldown_remaining().await?;
-//     println!("claim_faucet result: {res:?}");
-//     if res.is_some() {
-//         time::sleep(Duration::from_secs(1)).await;
-//     }
-
-//     let res = provider.vote(intent_hash).await?;
-//     println!("vote tx_hash: {res}");
-//     time::sleep(Duration::from_secs(1)).await;
-
-//     let vote_info = provider.vote_info(owner, intent_hash).await?;
-//     println!("vote vote_info = {vote_info:?}");
-//     Ok(())
-// }
-
-async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
+async fn vote_init(
+    rpc: &DemoRpc,
+    wallet: &LocalWallet,
+    proposal: VoteProposal,
+    intent_hash: B256,
+) -> Result<(), Box<dyn Error>> {
     let provider = &rpc.provider;
-    let account_signer = local_ed25519_signer(1)?;
-    let pk2_signer = local_ed25519_signer(12)?;
-    let pk3_signer = local_ed25519_signer(13)?;
-    let owner = account_signer.address();
-
-    let ix = sdk::account::SetSignerWeight {
-        owner: ChainSigner::new(owner),
-        index: 2,
-        weight: 4,
-    };
-    let (_packed_ix, proposal, intent_hash) = build_vote_proposal(ix.clone())?;
-
-    let slots = vec![
-        MultisigSlot::new(0, account_signer),
-        MultisigSlot::with_weight(2, 2, pk2_signer),
-        MultisigSlot::with_weight(3, 3, pk3_signer),
-    ];
-
-    let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
+    // let account_signer = local_ed25519_signer(1)?;
+    // let pk2_signer = local_ed25519_signer(12)?;
+    // let pk3_signer = local_ed25519_signer(13)?;
+    // let owner = account_signer.address();
+    //
+    // let slots = vec![
+    //     MultisigSlot::new(0, account_signer),
+    //     MultisigSlot::with_weight(2, 2, pk2_signer),
+    //     MultisigSlot::with_weight(3, 3, pk3_signer),
+    // ];
+    //
+    // let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
+    let (wallet, owner) = (wallet.clone(), wallet.default_account());
     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
 
     let res = provider.claim_faucet_with_cooldown_remaining().await?;
@@ -337,30 +278,89 @@ async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
         time::sleep(Duration::from_secs(1)).await;
     }
 
-    // vote init
     let res = provider.vote_init(intent_hash, proposal).await?;
     println!("vote_init tx_hash: {res}");
     time::sleep(Duration::from_secs(1)).await;
 
     let vote_info = provider.vote_info(owner, intent_hash).await?;
-    if vote_info.2 {
-        submit_after_multisig_on_chain(rpc, ix.clone()).await?;
-        return Ok(());
+    println!("vote_init vote_info = {vote_info:?}");
+
+    Ok(())
+}
+
+async fn vote(
+    rpc: &DemoRpc,
+    wallet: &LocalWallet,
+    intent_hash: B256,
+) -> Result<(), Box<dyn Error>> {
+    let provider = &rpc.provider;
+    // let account_signer = local_ed25519_signer(1)?;
+    // let pk2_signer = local_ed25519_signer(12)?;
+    // let pk3_signer = local_ed25519_signer(13)?;
+    // let owner = account_signer.address();
+    //
+    // let slots = vec![
+    //     MultisigSlot::new(0, account_signer),
+    //     MultisigSlot::with_weight(2, 2, pk2_signer),
+    //     MultisigSlot::with_weight(3, 3, pk3_signer),
+    // ];
+    // let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
+    let (wallet, owner) = (wallet.clone(), wallet.default_account());
+    let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
+
+    let res = provider.claim_faucet_with_cooldown_remaining().await?;
+    println!("claim_faucet result: {res:?}");
+    if res.is_some() {
+        time::sleep(Duration::from_secs(1)).await;
     }
 
-    // sleep 6's
-    time::sleep(Duration::from_secs(6)).await;
-
-    // vote
     let res = provider.vote(intent_hash).await?;
     println!("vote tx_hash: {res}");
     time::sleep(Duration::from_secs(1)).await;
 
     let vote_info = provider.vote_info(owner, intent_hash).await?;
-    if vote_info.2 {
-        submit_after_multisig_on_chain(rpc, ix).await?;
-    }
+    println!("vote vote_info = {vote_info:?}");
     Ok(())
+}
+
+enum VoteKind {
+    Init,
+    Vote,
+    Info,
+    Submit,
+}
+
+async fn multisig_on_chain(rpc: &DemoRpc, kind: VoteKind) -> Result<(), Box<dyn Error>> {
+    let account_signer = local_ed25519_signer(1)?;
+    let pk2_signer = local_ed25519_signer(12)?;
+    let pk3_signer = local_ed25519_signer(13)?;
+    let owner = account_signer.address();
+
+    let slots = vec![
+        MultisigSlot::new(0, account_signer),
+        MultisigSlot::with_weight(2, 2, pk2_signer),
+        MultisigSlot::with_weight(3, 3, pk3_signer),
+    ];
+
+    let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
+
+    let ix = sdk::account::SetSignerWeight {
+        owner: ChainSigner::new(owner),
+        index: 2,
+        weight: 4,
+    };
+    let (_packed_ix, proposal, intent_hash) = build_vote_proposal(ix.clone())?;
+
+    match kind {
+        VoteKind::Init => vote_init(rpc, &wallet, proposal, intent_hash).await,
+        VoteKind::Vote => vote(rpc, &wallet, intent_hash).await,
+        VoteKind::Submit => submit_after_vote(rpc, owner).await,
+        VoteKind::Info => {
+            let vote_info = rpc.provider.vote_info(owner, intent_hash).await?;
+            println!("vote_init vote_info = {vote_info:?}");
+            Ok(())
+        },
+    }
 }
 
 async fn submit_after_multisig_on_chain<M: WriteMethod + Send + 'static>(
@@ -368,6 +368,7 @@ async fn submit_after_multisig_on_chain<M: WriteMethod + Send + 'static>(
     ix: M,
 ) -> Result<(), Box<dyn Error>> {
     let wallet = LocalWallet::new(local_ed25519_signer(1)?);
+    let payer = wallet.default_account();
     let provider = rpc.provider.with_wallet_filler(WalletFiller::new(wallet));
 
     let res = provider.claim_faucet_with_cooldown_remaining().await?;
@@ -376,7 +377,7 @@ async fn submit_after_multisig_on_chain<M: WriteMethod + Send + 'static>(
         time::sleep(Duration::from_secs(1)).await;
     }
 
-    let tx_hash = provider.send_method(ix).await?;
+    let tx_hash = provider.submit_method(ix, Some(payer)).await?;
     println!("submit_after_vote tx_hash: {tx_hash}");
 
     let raw: Vec<u8> = wait_for_get_txn(&provider, tx_hash).await?;
@@ -388,14 +389,7 @@ async fn submit_after_multisig_on_chain<M: WriteMethod + Send + 'static>(
 fn build_vote_proposal(
     // owner: Address,
     ix: sdk::account::SetSignerWeight,
-) -> Result<
-    (
-        milon_primitives::PackedInstruction,
-        sdk::account::VoteProposal,
-        B256,
-    ),
-    Box<dyn Error>,
-> {
+) -> Result<(milon_primitives::PackedInstruction, VoteProposal, B256), Box<dyn Error>> {
     let proposal_instruction = ix.pack()?;
     let proposal = sdk::account::VoteProposal {
         instructions: vec![proposal_instruction.as_slice().to_vec()],
@@ -413,14 +407,17 @@ fn compute_vote_intent_hash(proposal_instruction: &milon_primitives::PackedInstr
     B256::new(*hasher.finalize().as_bytes())
 }
 
-async fn submit_after_vote(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
-    let account_signer = local_ed25519_signer(2)?;
-    let owner = account_signer.address();
+async fn submit_after_vote(rpc: &DemoRpc, owner: Address) -> Result<(), Box<dyn Error>> {
     let ix = sdk::account::SetSignerWeight {
         owner: ChainSigner::new(owner),
         index: 0,
         weight: 3,
     };
+    // let ix = sdk::account::SetSignerWeight {
+    //     owner: ChainSigner::new(owner),
+    //     index: 2,
+    //     weight: 4,
+    // };
 
     submit_after_multisig_on_chain(rpc, ix).await?;
 
@@ -457,12 +454,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // submit_after_vote(&rpc).await?;
 
-    // list_signers(&rpc).await?;
-    // let res = multisig_on_chain(&rpc).await;
-    // println!("multisig_on_chain res: {res:?}");
-    // list_signers(&rpc).await?;
+    list_signers(&rpc).await?;
+    let res = multisig_on_chain(&rpc, VoteKind::Submit).await;
+    println!(">>>>>>multisig_on_chain res: {res:?}");
+    list_signers(&rpc).await?;
 
-    list_active_votes(&rpc).await?;
+    // list_active_votes(&rpc).await?;
+    // list_signers(&rpc).await?;
     Ok(())
 }
 
@@ -477,6 +475,61 @@ async fn list_signers(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+// async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
+//     let provider = &rpc.provider;
+//     let account_signer = local_ed25519_signer(1)?;
+//     let pk2_signer = local_ed25519_signer(12)?;
+//     let pk3_signer = local_ed25519_signer(13)?;
+//     let owner = account_signer.address();
+//
+//     let ix = sdk::account::SetSignerWeight {
+//         owner: ChainSigner::new(owner),
+//         index: 2,
+//         weight: 4,
+//     };
+//     let (_packed_ix, proposal, intent_hash) = build_vote_proposal(ix.clone())?;
+//
+//     let slots = vec![
+//         // MultisigSlot::new(0, account_signer),
+//         MultisigSlot::with_weight(2, 2, pk2_signer),
+//         MultisigSlot::with_weight(3, 3, pk3_signer),
+//     ];
+//
+//     let wallet = LocalWallet::new_multisig(owner, slots, 5)?;
+//     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
+//
+//     let res = provider.claim_faucet_with_cooldown_remaining().await?;
+//     println!("claim_faucet result: {res:?}");
+//     if res.is_some() {
+//         time::sleep(Duration::from_secs(1)).await;
+//     }
+//
+//     // // vote init
+//     // let res = provider.vote_init(intent_hash, proposal).await?;
+//     // println!("vote_init tx_hash: {res}");
+//     // time::sleep(Duration::from_secs(1)).await;
+//
+//     let vote_info = provider.vote_info(owner, intent_hash).await?;
+//     println!("vote vote_info = {vote_info:?}");
+//     // if vote_info.2 {
+//     //     submit_after_multisig_on_chain(rpc, ix.clone()).await?;
+//     //     return Ok(());
+//     // }
+//
+//     // // sleep 6's
+//     // time::sleep(Duration::from_secs(6)).await;
+//
+//     // vote
+//     let res = provider.vote(intent_hash).await?;
+//     println!("vote tx_hash: {res}");
+//     time::sleep(Duration::from_secs(5)).await;
+//
+//     let vote_info = provider.vote_info(owner, intent_hash).await?;
+//     if vote_info.2 {
+//         submit_after_multisig_on_chain(rpc, ix).await?;
+//     }
+//     Ok(())
+// }
 async fn transfer_from_with_ixs(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let provider = &rpc.provider;
     let token = local_ed25519_signer(b'E')?;
