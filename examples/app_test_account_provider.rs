@@ -431,8 +431,14 @@ async fn list_active_votes(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let owner_signer = local_ed25519_signer(1)?;
     let owner = owner_signer.address();
 
-    let signers = provider.list_active_votes(owner).await?;
-    println!("list_active_votes = {signers:?}");
+    let infos = provider.list_active_votes(owner).await?;
+    println!("active votes: {}", infos.len());
+    for info in infos {
+        println!(
+            "vote info intent_hash: {} {} {} {}",
+            info.0.intent_hash, info.0.source_tx_hash, info.2, info.0.expires_at_ms
+        );
+    }
 
     Ok(())
 }
@@ -461,8 +467,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // println!(">>>>>>multisig_on_chain res: {res:?}");
     // list_signers(&rpc).await?;
 
-    // list_active_votes(&rpc).await?;
-    list_signers(&rpc).await?;
+    list_active_votes(&rpc).await?;
+    // list_signers(&rpc).await?;
     Ok(())
 }
 

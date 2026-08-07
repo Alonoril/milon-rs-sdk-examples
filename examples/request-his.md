@@ -6,6 +6,93 @@ seed[100]bytes->public_key: [43, 194, 128, 11, 51, 22, 224, 9, 32, 159, 253, 117
 seed[100]hex->public_key: 2bc2800b3316e009209ffd757dab19ccf0ae84bc7ae90654e1e81712d270f653
 seed[100]bs58->public_key: 3wpYnGqceZ8DzN3guiTd9rrYkWTwTHCChBSuo6cvkXTG
 seed[100]bs58->address: 3kF5rqXzqri92EPxKaouaDVq49Fd
+seed[202]bytes->public_key: [70, 102, 39, 213, 39, 115, 201, 213, 205, 166, 200, 253, 40, 234, 49, 236, 123, 148, 230, 138, 168, 212, 46, 42, 211, 26, 117, 220, 141, 36, 237, 7]
+seed[202]hex->public_key: 466627d52773c9d5cda6c8fd28ea31ec7b94e68aa8d42e2ad31a75dc8d24ed07
+seed[202]bs58->public_key: 5jotNjSnm9ZJRefVfqHato9FC4d9t6CHb2xS1726MTyY
+seed[202]bs58->address: 4K6DczDjG9aVh4vKWZR2TN6WgjJZ
+seed[101]bytes->public_key: [214, 47, 1, 106, 30, 253, 30, 79, 223, 121, 62, 180, 44, 216, 68, 113, 225, 186, 159, 12, 240, 77, 18, 135, 181, 204, 113, 246, 22, 40, 124, 184]
+seed[101]hex->public_key: d62f016a1efd1e4fdf793eb42cd84471e1ba9f0cf04d1287b5cc71f616287cb8
+seed[101]bs58->public_key: FR5pWwinRBn35GNhg7bsvw8Q13kRept2pm561DwZCQzT
+seed[101]bs58->address: 2SWaPHFpBFZJLEXuz6SwxWhBUxh3
+vote_init claim_faucet result: None
+transaction tx_hash: PaBD3qTZ1YJ4VdfYWcBi1jC72qgZxPC4oa8froWBGXX
+after vote_init vote_info: (VoteMeta { intent_hash: FixedBytes([210, 252, 212, 34, 239, 153, 199, 72, 218, 133, 216, 179, 155, 200, 133, 253, 81, 37, 187, 42, 17, 178, 75, 214, 186, 212, 253, 56, 44, 152, 221, 239]), expires_at_ms: 1786193642276, source_tx_hash: FixedBytes([5, 200, 74, 62, 147, 238, 38, 179, 60, 8, 237, 98, 249, 114, 231, 56, 161, 188, 144, 177, 35, 159, 31, 112, 74, 228, 23, 31, 124, 247, 177, 102]) }, Bitmap64(2), false)
+seed[102]bytes->public_key: [52, 180, 217, 4, 49, 86, 203, 109, 207, 11, 235, 10, 41, 73, 183, 85, 156, 148, 13, 43, 203, 109, 190, 140, 83, 169, 179, 2, 120, 227, 167, 70]
+seed[102]hex->public_key: 34b4d9043156cb6dcf0beb0a2949b7559c940d2bcb6dbe8c53a9b30278e3a746
+seed[102]bs58->public_key: 4Yk9HoDSfJv9QcmJbLcXdWVgS7nfvdUqiVcvbSu8VBru
+seed[102]bs58->address: 331hA3BeRVTsVLfWcnMpoeir7qSx
+first vote claim_faucet result: None
+transaction tx_hash: FyZD7gh6sqWUoBdSmPFApPjYUvS3Nym2MWQsooAMXuKR
+after first vote vote_info: (VoteMeta { intent_hash: FixedBytes([210, 252, 212, 34, 239, 153, 199, 72, 218, 133, 216, 179, 155, 200, 133, 253, 81, 37, 187, 42, 17, 178, 75, 214, 186, 212, 253, 56, 44, 152, 221, 239]), expires_at_ms: 1786193642276, source_tx_hash: FixedBytes([5, 200, 74, 62, 147, 238, 38, 179, 60, 8, 237, 98, 249, 114, 231, 56, 161, 188, 144, 177, 35, 159, 31, 112, 74, 228, 23, 31, 124, 247, 177, 102]) }, Bitmap64(6), false)
+seed[103]bytes->public_key: [18, 164, 21, 146, 200, 183, 193, 125, 64, 89, 231, 178, 155, 97, 232, 255, 150, 199, 65, 95, 47, 128, 51, 72, 242, 240, 23, 224, 91, 158, 161, 218]
+seed[103]hex->public_key: 12a41592c8b7c17d4059e7b29b61e8ff96c7415f2f803348f2f017e05b9ea1da
+seed[103]bs58->public_key: 2FmTRNa4NTmmswmafCReLTHRTEMVEMUmzgRdBLrDRk57
+seed[103]bs58->address: 4PoZLSnuVNqeZnNxpktWnmJn4Ney
+second vote claim_faucet result: None
+transaction tx_hash: GxutQuYiXMr7C1iwr3JjwMC8FYXrdNKDD76GFLjFRSu
+after second vote vote_info: (VoteMeta { intent_hash: FixedBytes([210, 252, 212, 34, 239, 153, 199, 72, 218, 133, 216, 179, 155, 200, 133, 253, 81, 37, 187, 42, 17, 178, 75, 214, 186, 212, 253, 56, 44, 152, 221, 239]), expires_at_ms: 1786193642276, source_tx_hash: FixedBytes([5, 200, 74, 62, 147, 238, 38, 179, 60, 8, 237, 98, 249, 114, 231, 56, 161, 188, 144, 177, 35, 159, 31, 112, 74, 228, 23, 31, 124, 247, 177, 102]) }, Bitmap64(14), true)
+vote_info.ready = true; submitting voted transaction
+seed[100]bytes->public_key: [43, 194, 128, 11, 51, 22, 224, 9, 32, 159, 253, 117, 125, 171, 25, 204, 240, 174, 132, 188, 122, 233, 6, 84, 225, 232, 23, 18, 210, 112, 246, 83]
+seed[100]hex->public_key: 2bc2800b3316e009209ffd757dab19ccf0ae84bc7ae90654e1e81712d270f653
+seed[100]bs58->public_key: 3wpYnGqceZ8DzN3guiTd9rrYkWTwTHCChBSuo6cvkXTG
+seed[100]bs58->address: 3kF5rqXzqri92EPxKaouaDVq49Fd
+seed[102]bytes->public_key: [52, 180, 217, 4, 49, 86, 203, 109, 207, 11, 235, 10, 41, 73, 183, 85, 156, 148, 13, 43, 203, 109, 190, 140, 83, 169, 179, 2, 120, 227, 167, 70]
+seed[102]hex->public_key: 34b4d9043156cb6dcf0beb0a2949b7559c940d2bcb6dbe8c53a9b30278e3a746
+seed[102]bs58->public_key: 4Yk9HoDSfJv9QcmJbLcXdWVgS7nfvdUqiVcvbSu8VBru
+seed[102]bs58->address: 331hA3BeRVTsVLfWcnMpoeir7qSx
+seed[103]bytes->public_key: [18, 164, 21, 146, 200, 183, 193, 125, 64, 89, 231, 178, 155, 97, 232, 255, 150, 199, 65, 95, 47, 128, 51, 72, 242, 240, 23, 224, 91, 158, 161, 218]
+seed[103]hex->public_key: 12a41592c8b7c17d4059e7b29b61e8ff96c7415f2f803348f2f017e05b9ea1da
+seed[103]bs58->public_key: 2FmTRNa4NTmmswmafCReLTHRTEMVEMUmzgRdBLrDRk57
+seed[103]bs58->address: 4PoZLSnuVNqeZnNxpktWnmJn4Ney
+seed[202]bytes->public_key: [70, 102, 39, 213, 39, 115, 201, 213, 205, 166, 200, 253, 40, 234, 49, 236, 123, 148, 230, 138, 168, 212, 46, 42, 211, 26, 117, 220, 141, 36, 237, 7]
+seed[202]hex->public_key: 466627d52773c9d5cda6c8fd28ea31ec7b94e68aa8d42e2ad31a75dc8d24ed07
+seed[202]bs58->public_key: 5jotNjSnm9ZJRefVfqHato9FC4d9t6CHb2xS1726MTyY
+seed[202]bs58->address: 4K6DczDjG9aVh4vKWZR2TN6WgjJZ
+submit claim_faucet result: Some(FixedBytes([117, 98, 125, 57, 150, 193, 237, 146, 39, 103, 169, 84, 153, 224, 93, 154, 105, 228, 136, 28, 219, 13, 122, 250, 87, 164, 14, 241, 108, 123, 162, 144]))
+submit tx_hash: GUgLyCGf1bmCxucZjVef87whETp2dapJGZQHpdaWYRR3
+transaction history:
+  stamp: 1786107249824
+  payer_signature_index: Some(1)
+  signature_count: 2
+  tx_id: 000000000000041400000000
+  tx_hash: GUgLyCGf1bmCxucZjVef87whETp2dapJGZQHpdaWYRR3
+  state: 1 (success)
+  gas_charged: 8334
+  error: None
+  instruction_count: 1
+    instruction[0]: {"app_id":255,"app_name":"demo","instruction_name":"InitPool","token":{"method":"InitPool","fields":[{"name":"pool","value":"4K6DczDjG9aVh4vKWZR2TN6WgjJZ"},{"name":"label","value":"idl app demo pool"}]}}
+  access_resource_count: 7
+    access[0].resource_id: FixedBytes([1, 13, 23, 85, 137, 84, 201, 173, 172, 70, 80, 128, 213, 148, 241, 160, 230, 44])
+      access[0].first_snapshot: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(14)) }
+      access[0].last_written: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(0)) }
+    access[1].resource_id: FixedBytes([1, 214, 155, 215, 108, 65, 242, 206, 107, 167, 76, 87, 169, 204, 0, 30, 176, 93])
+      access[1].first_snapshot: inline DecodedResource { name: "VoteMeta", type_tag: 2370275984328722986, token: Struct { name: "VoteMeta", fields: [NamedToken { name: "intent_hash", value: Array([U8(210), U8(252), U8(212), U8(34), U8(239), U8(153), U8(199), U8(72), U8(218), U8(133), U8(216), U8(179), U8(155), U8(200), U8(133), U8(253), U8(81), U8(37), U8(187), U8(42), U8(17), U8(178), U8(75), U8(214), U8(186), U8(212), U8(253), U8(56), U8(44), U8(152), U8(221), U8(239)]) }, NamedToken { name: "expires_at_ms", value: U64(1786193642276) }, NamedToken { name: "source_tx_hash", value: Array([U8(5), U8(200), U8(74), U8(62), U8(147), U8(238), U8(38), U8(179), U8(60), U8(8), U8(237), U8(98), U8(249), U8(114), U8(231), U8(56), U8(161), U8(188), U8(144), U8(177), U8(35), U8(159), U8(31), U8(112), U8(74), U8(228), U8(23), U8(31), U8(124), U8(247), U8(177), U8(102)]) }] } }
+      access[1].last_written: inline DecodedResource { name: "VoteMeta", type_tag: 2370275984328722986, token: Struct { name: "VoteMeta", fields: [NamedToken { name: "intent_hash", value: Array([U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0)]) }, NamedToken { name: "expires_at_ms", value: U64(0) }, NamedToken { name: "source_tx_hash", value: Array([U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0), U8(0)]) }] } }
+    access[2].resource_id: FixedBytes([1, 199, 190, 69, 68, 179, 101, 219, 166, 103, 171, 193, 101, 165, 239, 15, 131, 63])
+      access[2].first_snapshot: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(4539334292406272)) }
+      access[2].last_written: inline DecodedResource { name: "Bitmap64", type_tag: 6259351211094536142, token: Bitmap64(Bitmap64(4539334292144128)) }
+    access[3].resource_id: FixedBytes([255, 237, 22, 39, 15, 83, 75, 135, 54, 168, 169, 200, 1, 150, 204, 18, 38, 121])
+      access[3].first_snapshot: none
+      access[3].last_written: inline DecodedResource { name: "Address", type_tag: 17438174819379414968, token: Address(4K6DczDjG9aVh4vKWZR2TN6WgjJZ) }
+    access[4].resource_id: FixedBytes([255, 132, 194, 46, 33, 152, 116, 80, 14, 124, 71, 10, 184, 36, 223, 120, 89, 224])
+      access[4].first_snapshot: none
+      access[4].last_written: inline DecodedResource { name: "Label", type_tag: 4454442085531989710, token: Struct { name: "Label", fields: [NamedToken { name: "text", value: String("idl app demo pool") }] } }
+    access[5].resource_id: FixedBytes([2, 34, 164, 173, 45, 221, 239, 23, 79, 104, 182, 251, 238, 172, 83, 18, 243, 86])
+      access[5].first_snapshot: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(9999989980) }
+      access[5].last_written: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(9999981646) }
+    access[6].resource_id: FixedBytes([2, 34, 219, 135, 88, 254, 179, 118, 85, 215, 237, 148, 129, 233, 50, 129, 207, 16])
+      access[6].first_snapshot: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(28845240) }
+      access[6].last_written: inline DecodedResource { name: "u64", type_tag: 5563585020063213298, token: U64(28853574) }
+  event_count: 0
+>>>>>>multisig_on_chain res: Ok(())
+
+```
+
+```text
+seed[100]bytes->public_key: [43, 194, 128, 11, 51, 22, 224, 9, 32, 159, 253, 117, 125, 171, 25, 204, 240, 174, 132, 188, 122, 233, 6, 84, 225, 232, 23, 18, 210, 112, 246, 83]
+seed[100]hex->public_key: 2bc2800b3316e009209ffd757dab19ccf0ae84bc7ae90654e1e81712d270f653
+seed[100]bs58->public_key: 3wpYnGqceZ8DzN3guiTd9rrYkWTwTHCChBSuo6cvkXTG
+seed[100]bs58->address: 3kF5rqXzqri92EPxKaouaDVq49Fd
 seed[200]bytes->public_key: [151, 255, 200, 131, 200, 11, 238, 114, 55, 239, 149, 217, 185, 183, 3, 212, 173, 99, 230, 10, 33, 230, 5, 134, 118, 130, 183, 91, 139, 63, 67, 3]
 seed[200]hex->public_key: 97ffc883c80bee7237ef95d9b9b703d4ad63e60a21e605867682b75b8b3f4303
 seed[200]bs58->public_key: BELn9TCk4uWEihwdgoUx8xUfd5ujL9pKrwtJCesiQAev

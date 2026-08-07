@@ -17,7 +17,7 @@ const OWNER_SIGNER_SEED: u8 = 100;
 const IDX1_VOTE_SIGNER_SEED: u8 = 101;
 const IDX2_VOTE_SIGNER_SEED: u8 = 102;
 const IDX3_VOTE_SIGNER_SEED: u8 = 103;
-const RELAYER_SIGNER_SEED: u8 = 200;
+const RELAYER_SIGNER_SEED: u8 = 203;
 
 struct VoteIntent {
     packed_ix: PackedInstruction,
@@ -66,7 +66,7 @@ async fn wait_after_transaction(tx_hash: B256) {
 
 async fn vote_init(
     rpc: &DemoRpc,
-    owner: milon_crypto::Address,
+    owner: Address,
     wallet: LocalWallet,
     intent: &VoteIntent,
 ) -> Result<(), Box<dyn Error>> {
@@ -88,7 +88,7 @@ async fn vote_init(
 
 async fn collect_vote(
     rpc: &DemoRpc,
-    owner: milon_crypto::Address,
+    owner: Address,
     wallet: LocalWallet,
     intent: &VoteIntent,
     label: &str,
@@ -119,7 +119,7 @@ fn build_submit_wallet(owner: Address) -> Result<(LocalWallet, Address), Box<dyn
         MultisigSlot::with_weight(3, 3, idx3_vote_signer),
     ];
     let mut wallet = LocalWallet::new(relayer_signer);
-    wallet.register_multisig(owner, 5, slots)?;
+    // wallet.register_multisig(owner, 5, slots)?;
     Ok((wallet, payer))
 }
 
@@ -136,7 +136,7 @@ async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<()
     let plan =
         SigningPlan::new(payer).authorize(AccountAuthorization::new(payer, vec![0]).with_payer());
     let request = TransactionRequest::new(vec![intent.packed_ix.clone()])?
-        .with_payer(payer)
+        // .with_payer(payer)
         .with_signing_plan(plan);
     let tx_hash = provider.send_voted_transaction(request).await?;
     println!("submit tx_hash: {tx_hash}");
@@ -159,38 +159,38 @@ async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     })?;
     debug_assert_eq!(intent.intent_hash, intent.recompute_hash());
 
-    // vote_init(
-    //     rpc,
-    //     owner,
-    //     vote_wallet(owner, IDX1_VOTE_SIGNER_SEED, 1, 1)?,
-    //     &intent,
-    // )
-    // .await?;
-    //
-    // let first_vote_ready = collect_vote(
-    //     rpc,
-    //     owner,
-    //     vote_wallet(owner, IDX2_VOTE_SIGNER_SEED, 2, 2)?,
-    //     &intent,
-    //     "first vote",
-    // )
-    // .await?;
-    // if first_vote_ready {
-    //     return Err("vote_info became ready after only one additional vote".into());
-    // }
-    //
-    // let final_vote_ready = collect_vote(
-    //     rpc,
-    //     owner,
-    //     vote_wallet(owner, IDX3_VOTE_SIGNER_SEED, 3, 3)?,
-    //     &intent,
-    //     "second vote",
-    // )
-    // .await?;
-    // if !final_vote_ready {
-    //     return Err("vote_info.ready is false after collecting two votes".into());
-    // }
-    // println!("vote_info.ready = true; submitting voted transaction");
+    vote_init(
+        rpc,
+        owner,
+        vote_wallet(owner, IDX1_VOTE_SIGNER_SEED, 1, 1)?,
+        &intent,
+    )
+    .await?;
+
+    let first_vote_ready = collect_vote(
+        rpc,
+        owner,
+        vote_wallet(owner, IDX2_VOTE_SIGNER_SEED, 2, 2)?,
+        &intent,
+        "first vote",
+    )
+    .await?;
+    if first_vote_ready {
+        return Err("vote_info became ready after only one additional vote".into());
+    }
+
+    let final_vote_ready = collect_vote(
+        rpc,
+        owner,
+        vote_wallet(owner, IDX3_VOTE_SIGNER_SEED, 3, 3)?,
+        &intent,
+        "second vote",
+    )
+    .await?;
+    if !final_vote_ready {
+        return Err("vote_info.ready is false after collecting two votes".into());
+    }
+    println!("vote_info.ready = true; submitting voted transaction");
     submit(rpc, owner, &intent).await
 }
 
@@ -288,3 +288,40 @@ mod tests {
         assert_eq!(wallet.sole_multisig_account(), Some(owner));
     }
 }
+// async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<(), Box<dyn Error>> {
+//     let account_signer = local_ed25519_signer(OWNER_SIGNER_SEED)?;
+//     let idx2_vote_signer = local_ed25519_signer(IDX2_VOTE_SIGNER_SEED)?;
+//     let idx3_vote_signer = local_ed25519_signer(IDX3_VOTE_SIGNER_SEED)?;
+//     let relayer_signer = local_ed25519_signer(RELAYER_SIGNER_SEED)?;
+//     let payer = relayer_signer.address();
+//     let slots = vec![
+//         MultisigSlot::new(0, account_signer),
+//         MultisigSlot::with_weight(2, 2, idx2_vote_signer),
+//         MultisigSlot::with_weight(3, 3, idx3_vote_signer),
+//     ];
+//     let mut payer_wallet = LocalWallet::new(local_ed25519_signer(255)?);
+//     payer_wallet.register_multisig(owner, 5, slots)?;
+//     payer_wallet.register_signer(relayer_signer)?;
+//     let provider = rpc
+//         .provider
+//         .with_wallet_filler(WalletFiller::new(payer_wallet));
+//
+//     let faucet_result = provider.claim_faucet_with_cooldown_remaining().await?;
+//     println!("submit claim_faucet result: {faucet_result:?}");
+//     if faucet_result.is_some() {
+//         time::sleep(Duration::from_secs(1)).await;
+//     }
+//
+//     let plan =
+//         SigningPlan::new(payer).authorize(AccountAuthorization::new(payer, vec![0]).with_payer());
+//     let request = TransactionRequest::new(vec![intent.packed_ix.clone()])?
+//         .with_payer(payer)
+//         .with_signing_plan(plan);
+//     let tx_hash = provider.send_voted_transaction(request).await?;
+//     println!("submit tx_hash: {tx_hash}");
+//
+//     let raw: Vec<u8> = wait_for_get_txn(&provider, tx_hash).await?;
+//     let history = sdk::decode_transaction_history(&raw)?;
+//     print_transaction_history(&history);
+//     Ok(())
+// }
