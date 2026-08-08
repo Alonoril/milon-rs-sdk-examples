@@ -13,11 +13,11 @@ use std::{error::Error, time::Duration};
 use tokio::time;
 
 const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
-const OWNER_SIGNER_SEED: u8 = 100;
-const IDX1_VOTE_SIGNER_SEED: u8 = 101;
-const IDX2_VOTE_SIGNER_SEED: u8 = 102;
-const IDX3_VOTE_SIGNER_SEED: u8 = 103;
-const RELAYER_SIGNER_SEED: u8 = 203;
+const OWNER_SIGNER_SEED: u8 = 110;
+const IDX1_VOTE_SIGNER_SEED: u8 = 111;
+const IDX2_VOTE_SIGNER_SEED: u8 = 112;
+const IDX3_VOTE_SIGNER_SEED: u8 = 113;
+const RELAYER_SIGNER_SEED: u8 = 200;
 
 struct VoteIntent {
     packed_ix: PackedInstruction,
@@ -26,7 +26,7 @@ struct VoteIntent {
 }
 
 impl VoteIntent {
-    fn new(ix: demo::InitPool) -> Result<Self, Box<dyn Error>> {
+    fn new(ix: demo::SetLabel) -> Result<Self, Box<dyn Error>> {
         let packed_ix = ix.pack()?;
         let proposal = VoteProposal {
             instructions: vec![packed_ix.as_slice().to_vec()],
@@ -81,7 +81,7 @@ async fn vote_init(
         .vote_init(intent.intent_hash, intent.proposal.clone())
         .await?;
     wait_after_transaction(tx_hash).await;
-    let vote_info = provider.vote_info(owner, intent.intent_hash).await?;
+    let vote_info = provider.get_vote(owner, intent.intent_hash).await?;
     println!("after vote_init vote_info: {vote_info:?}");
     Ok(())
 }
@@ -102,7 +102,7 @@ async fn collect_vote(
 
     let tx_hash = provider.vote(intent.intent_hash).await?;
     wait_after_transaction(tx_hash).await;
-    let vote_info = provider.vote_info(owner, intent.intent_hash).await?;
+    let vote_info = provider.get_vote(owner, intent.intent_hash).await?;
     println!("after {label} vote_info: {vote_info:?}");
     Ok(vote_info.2)
 }
@@ -119,7 +119,7 @@ fn build_submit_wallet(owner: Address) -> Result<(LocalWallet, Address), Box<dyn
         MultisigSlot::with_weight(3, 3, idx3_vote_signer),
     ];
     let mut wallet = LocalWallet::new(relayer_signer);
-    // wallet.register_multisig(owner, 5, slots)?;
+    wallet.register_multisig(owner, 5, slots)?;
     Ok((wallet, payer))
 }
 
@@ -136,7 +136,7 @@ async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<()
     let plan =
         SigningPlan::new(payer).authorize(AccountAuthorization::new(payer, vec![0]).with_payer());
     let request = TransactionRequest::new(vec![intent.packed_ix.clone()])?
-        // .with_payer(payer)
+        .with_payer(payer)
         .with_signing_plan(plan);
     let tx_hash = provider.send_voted_transaction(request).await?;
     println!("submit tx_hash: {tx_hash}");
@@ -153,9 +153,9 @@ async fn multisig_on_chain(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 
     let pool_signer = local_ed25519_signer(RELAYER_SIGNER_SEED)?;
     let pool = pool_signer.address();
-    let intent = VoteIntent::new(demo::InitPool {
-        pool: InstructionSigner::new(pool),
-        label: "idl app demo pool".to_owned(),
+    let intent = VoteIntent::new(demo::SetLabel {
+        pool,
+        label: "idl app demo pool2".to_owned(),
     })?;
     debug_assert_eq!(intent.intent_hash, intent.recompute_hash());
 
@@ -265,8 +265,8 @@ mod tests {
     fn vote_intent_contains_one_reusable_proposal() {
         let pool_secret = SecretKey::new_pure();
         let pool = Address::from_public_key(&pool_secret.ed25519_public());
-        let intent = VoteIntent::new(demo::InitPool {
-            pool: InstructionSigner::new(pool),
+        let intent = VoteIntent::new(demo::SetLabel {
+            pool,
             label: "idl app demo pool".to_owned(),
         })
         .unwrap();

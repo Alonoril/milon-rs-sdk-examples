@@ -281,7 +281,7 @@ async fn vote_init(
     println!("vote_init tx_hash: {res}");
     time::sleep(Duration::from_secs(1)).await;
 
-    let vote_info = provider.vote_info(owner, intent_hash).await?;
+    let vote_info = provider.get_vote(owner, intent_hash).await?;
     println!("vote_init vote_info = {vote_info:?}");
 
     Ok(())
@@ -317,7 +317,7 @@ async fn vote(
     println!("vote tx_hash: {res}");
     time::sleep(Duration::from_secs(1)).await;
 
-    let vote_info = provider.vote_info(owner, intent_hash).await?;
+    let vote_info = provider.get_vote(owner, intent_hash).await?;
     println!("vote vote_info = {vote_info:?}");
     Ok(())
 }
@@ -355,7 +355,7 @@ async fn multisig_on_chain(rpc: &DemoRpc, kind: VoteKind) -> Result<(), Box<dyn 
         VoteKind::Vote => vote(rpc, &wallet, intent_hash).await,
         VoteKind::Submit => submit_after_multisig_on_chain(rpc, &wallet, ix).await,
         VoteKind::Info => {
-            let vote_info = rpc.provider.vote_info(owner, intent_hash).await?;
+            let vote_info = rpc.provider.get_vote(owner, intent_hash).await?;
             println!("vote_init vote_info = {vote_info:?}");
             Ok(())
         },

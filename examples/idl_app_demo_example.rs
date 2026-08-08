@@ -1,4 +1,4 @@
-use milon_client::{self as sdk, WalletFiller, demo};
+use milon_client::{self as sdk, WalletFiller, demo, demo::Label};
 use milon_crypto::{Address, secretkey::SecretKey};
 use milon_idl_core::{Method, Signer as InstructionSigner};
 use milon_local_wallet::{
@@ -15,8 +15,18 @@ const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let rpc = DemoRpc::connect(DEFAULT_HTTP_RPC_URL)?;
-    echo_mode(&rpc).await?;
+    // echo_mode(&rpc).await?;
     // init_pool(&rpc).await
+
+    label_of(&rpc).await?;
+    Ok(())
+}
+
+async fn label_of(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
+    let pool_signer = local_ed25519_signer(200)?;
+    let pool = pool_signer.address();
+    let res = rpc.provider.call(demo::LabelOf { pool }).await?;
+    println!("label_of result: {:?}", res);
     Ok(())
 }
 
