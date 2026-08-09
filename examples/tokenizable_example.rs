@@ -2,8 +2,13 @@ use milon_idl_core::{Address, Detokenize, NamedToken, Token, Tokenizable as _};
 use milon_idl_macro::Tokenizable;
 use milon_primitives::AnySigner;
 use std::collections::BTreeMap;
+use milon_client::types::RpcEncode;
 
-mod tokenizable_account_profile;
+#[derive(Clone, Debug, PartialEq, Eq, Tokenizable)]
+struct Inner {
+    address: Address,
+    accounts: BTreeMap<u8, i16>,
+}
 
 #[derive(Clone, Debug, PartialEq, Eq, Tokenizable)]
 struct AccountProfile {
@@ -15,6 +20,7 @@ struct AccountProfile {
     revision: [u8; 4],
     roles: Vec<(u8, String)>,
     balances: BTreeMap<String, u64>,
+    inner: Inner,
 }
 
 fn main() {
@@ -38,6 +44,10 @@ fn main() {
         revision: [1, 0, 0, 7],
         roles: vec![(1, "operator".to_owned()), (2, "treasury".to_owned())],
         balances: BTreeMap::from([("MIL".to_owned(), 1_000_000), ("USDM".to_owned(), 42_000)]),
+        inner: Inner {
+            address: Address::from_bytes(&[8_u8; 20]).unwrap(),
+            accounts: BTreeMap::from([(11, -11), (12, -12)]),
+        },
     };
     let token = profile.clone().into_token();
     println!(">>>profile token: {:#?}", token);
