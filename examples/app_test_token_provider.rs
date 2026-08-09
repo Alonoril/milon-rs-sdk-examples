@@ -30,9 +30,9 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // approve_and_revoke(&rpc).await?;
 
-    transfer_from(&rpc).await?;
+    // transfer_from(&rpc).await?;
 
-    // transfer_from_with_ixs(&rpc).await?;
+    transfer_from_with_ixs(&rpc).await?;
 
     Ok(())
 }

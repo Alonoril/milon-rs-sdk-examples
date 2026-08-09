@@ -40,9 +40,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let response = rpc.provider.simulate_transaction(request.clone()).await?;
     let receipt = sdk::decode_transaction_response(&response)?;
     print_simulate_receipt(&receipt);
-    println!(
-        "------------------------------------------------------------------------------------------------"
-    );
+    println!("--------------------------------------------------------------------------------");
 
     // submit tx
     let tx_hash = rpc.provider.submit_transaction(request).await?;

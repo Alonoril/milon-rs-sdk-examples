@@ -47,12 +47,12 @@ impl DemoRpc {
         // let transport = HttpInvokeTransport::new(url);
         // let client = RpcClient::builder().transport(reliable_transport(transport), false);
         // let provider = ProviderBuilder::new().connect_client(client);
-        let provider = rpc_connect(rpc_url)?;
+        let provider = build_provider(rpc_url)?;
         Ok(Self { provider })
     }
 }
 
-pub fn rpc_connect(rpc_url: &str) -> Result<LocalProvider, Box<dyn Error>> {
+pub fn build_provider(rpc_url: &str) -> Result<LocalProvider, Box<dyn Error>> {
     let url: Url = rpc_url.parse()?;
     let transport = HttpInvokeTransport::new(url);
     let client = RpcClient::builder().transport(reliable_transport(transport), false);

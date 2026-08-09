@@ -9,7 +9,7 @@ use milon_provider::{Provider, SendableTransaction, TransactionRequest};
 use only_sdk_examples::{
     LocalProvider,
     decode_print::{print_decoded_instructions, print_simulate_receipt, print_transaction_history},
-    local_ed25519_signer, mil_token_address, rpc_connect, wait_for_get_txn,
+    local_ed25519_signer, mil_token_address, build_provider, wait_for_get_txn,
 };
 use std::{env, error::Error};
 
@@ -25,7 +25,7 @@ type WalletProvider = milon_provider::FillProvider<
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
     let rpc_url = env::var("MILON_RPC_URL").unwrap_or_else(|_| DEFAULT_RPC_URL.to_owned());
-    let rpc_provider = rpc_connect(&rpc_url)?;
+    let rpc_provider = build_provider(&rpc_url)?;
     let (provider, request) = build_demo_provider(rpc_provider)?;
 
     // `fill` runs ChainIdFiller, StampFiller, then WalletFiller without sending.

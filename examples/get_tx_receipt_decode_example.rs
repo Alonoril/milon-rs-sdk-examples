@@ -5,7 +5,7 @@ use std::{env, error::Error};
 
 // const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/milon/v1";
 const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
-const DEFAULT_TX_HASH_BS58: &str = "BLuTczC8igRgHiauGagUYYK85A9BsP25Z4SWxcEHKEaX";
+const DEFAULT_TX_HASH_BS58: &str = "D19GEzQUahEKatTsohpNxa2Lz3H5CbYQLjV7KitgL83V";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
