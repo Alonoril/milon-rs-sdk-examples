@@ -32,7 +32,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // transfer_from(&rpc).await?;
 
-    transfer_from_with_ixs(&rpc).await?;
+    // transfer_from_with_ixs(&rpc).await?;
 
     Ok(())
 }
@@ -63,7 +63,7 @@ async fn balance_of(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 }
 
 async fn create_token(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
-    let token = local_ed25519_signer(b'E')?;
+    let token = local_ed25519_signer(b'T')?;
     let token_addr = token.address();
     let wallet = LocalWallet::new(token);
 
@@ -88,29 +88,29 @@ async fn create_token(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 }
 
 async fn mint(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
-    let token = local_ed25519_signer(b'E')?;
+    let token = local_ed25519_signer(b'T')?;
     let token_addr = token.address();
     println!(">>>>>>token(EGL) address: {token_addr}");
 
-    let account_signer = local_ed25519_signer(1)?;
-    let owner = account_signer.address();
-    let wallet = LocalWallet::new(account_signer);
+    let owner_signer = local_ed25519_signer(1)?;
+    let owner = owner_signer.address();
+    let wallet = LocalWallet::new(owner_signer);
 
     let provider = &rpc.provider;
     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
-    let res = provider.claim_faucet_with_cooldown_remaining().await?;
-    println!(">>>claim_faucet_with_cooldown_remaining tx_hash: {res:?}");
-    time::sleep(Duration::from_secs(1)).await;
+    let res = provider.claim_faucet_with_cooldown_remaining().await;
+    println!("claim_faucet_with_cooldown_remaining tx_hash: {res:?}");
+    if res.is_ok() {
+        println!(">>>claim_faucet tx_hash: {res:?}");
+        time::sleep(Duration::from_secs(1)).await;
+    }
 
+    let owner = Address::from_bs58("pFjhQSFxva13nsrMmXrLZRJDkMK").unwrap();
     let res = provider.mint(token_addr, owner, 999999999000000).await?;
     println!(">>>>>>Mint token tx_hash: {res}");
     time::sleep(Duration::from_secs(3)).await;
 
-    let balance = timeout(
-        Duration::from_secs(10),
-        provider.balance_of(token_addr, owner),
-    )
-    .await??;
+    let balance = provider.balance_of(token_addr, owner).await?;
     println!(">>>>>>balance_of = {balance}");
     Ok(())
 }
@@ -390,9 +390,9 @@ async fn transfer_from_with_ixs(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
 
 fn metadata() -> token::Metadata {
     token::Metadata {
-        name: "Egal".to_owned(),
-        symbol: "EGL".to_owned(),
-        decimals: 9,
-        icon: "https://milon.com/egl_icon.png".to_owned(),
+        name: "Test".to_owned(),
+        symbol: "Test".to_owned(),
+        decimals: 6,
+        icon: "https://milon.com/test_icon.png".to_owned(),
     }
 }
