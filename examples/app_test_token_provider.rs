@@ -20,7 +20,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
     // balance_of(&rpc).await?;
     // create_token(&rpc).await?;
     // get_metadata(&rpc).await?;
-    // mint(&rpc).await?;
+    let res = mint(&rpc).await;
+    println!("mint result = {:#?}", res);
     // burn(&rpc).await?;
     // transfer(&rpc).await?;
 
@@ -93,8 +94,13 @@ async fn mint(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     println!(">>>>>>token(EGL) address: {token_addr}");
 
     let owner_signer = local_ed25519_signer(1)?;
+    let signer_2 = local_ed25519_signer(2)?;
+    let signer_3 = local_ed25519_signer(3)?;
     let owner = owner_signer.address();
-    let wallet = LocalWallet::new(owner_signer);
+    // wallet注册的signers，都会对 ix=0 进行签名，包括default-signer
+    let mut wallet = LocalWallet::new(owner_signer);
+    wallet.register_signer(signer_2)?;
+    wallet.register_signer(signer_3)?;
 
     let provider = &rpc.provider;
     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
@@ -106,7 +112,8 @@ async fn mint(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     }
 
     let owner = Address::from_bs58("pFjhQSFxva13nsrMmXrLZRJDkMK").unwrap();
-    let res = provider.mint(token_addr, owner, 999999999000000).await?;
+    // 这里的 owner_signer、signer_2 和 signer_3 都会对 `token::mint` 指令签名
+    let res = provider.mint(token_addr, owner, 9999000000).await?;
     println!(">>>>>>Mint token tx_hash: {res}");
     time::sleep(Duration::from_secs(3)).await;
 
