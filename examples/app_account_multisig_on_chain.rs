@@ -1,3 +1,4 @@
+use infra_core::map_err_logged;
 use milon_client::{
     self as sdk, AccountProviderExt, TokenProviderExt, WalletFiller, account::VoteProposal, demo,
 };
@@ -7,7 +8,8 @@ use milon_local_wallet::{LocalWallet, MultisigSlot, Signer};
 use milon_primitives::{AccountAuthorization, B256, ChainId, PackedInstruction, SigningPlan};
 use milon_provider::TransactionRequest;
 use only_sdk_examples::{
-    DemoRpc, decode_print::print_transaction_history, local_ed25519_signer, wait_for_get_txn,
+    DemoRpc, decode_print::print_transaction_history, errors::ExmErr, local_ed25519_signer,
+    wait_for_get_txn,
 };
 use std::{error::Error, time::Duration};
 use tokio::time;
@@ -71,7 +73,10 @@ async fn vote_init(
     intent: &VoteIntent,
 ) -> Result<(), Box<dyn Error>> {
     let provider = rpc.provider.with_wallet_filler(WalletFiller::new(wallet));
-    let faucet_result = provider.claim_faucet_with_cooldown_remaining().await?;
+    let faucet_result = provider
+        .claim_faucet_with_cooldown_remaining()
+        .await
+        .map_err(map_err_logged!(ExmErr::ClaimFaucetWithCooldownRemaining))?;
     println!("vote_init claim_faucet result: {faucet_result:?}");
     if faucet_result.is_some() {
         time::sleep(Duration::from_secs(1)).await;
@@ -79,9 +84,13 @@ async fn vote_init(
 
     let tx_hash = provider
         .vote_init(intent.intent_hash, intent.proposal.clone())
-        .await?;
+        .await
+        .map_err(map_err_logged!(ExmErr::VoteInitErr))?;
     wait_after_transaction(tx_hash).await;
-    let vote_info = provider.get_vote(owner, intent.intent_hash).await?;
+    let vote_info = provider
+        .get_vote(owner, intent.intent_hash)
+        .await
+        .map_err(map_err_logged!(ExmErr::GetVoteErr))?;
     println!("after vote_init vote_info: {vote_info:?}");
     Ok(())
 }
@@ -94,15 +103,24 @@ async fn collect_vote(
     label: &str,
 ) -> Result<bool, Box<dyn Error>> {
     let provider = rpc.provider.with_wallet_filler(WalletFiller::new(wallet));
-    let faucet_result = provider.claim_faucet_with_cooldown_remaining().await?;
+    let faucet_result = provider
+        .claim_faucet_with_cooldown_remaining()
+        .await
+        .map_err(map_err_logged!(ExmErr::ClaimFaucetWithCooldownRemaining))?;
     println!("{label} claim_faucet result: {faucet_result:?}");
     if faucet_result.is_some() {
         time::sleep(Duration::from_secs(1)).await;
     }
 
-    let tx_hash = provider.vote(intent.intent_hash).await?;
+    let tx_hash = provider
+        .vote(intent.intent_hash)
+        .await
+        .map_err(map_err_logged!(ExmErr::VoteErr))?;
     wait_after_transaction(tx_hash).await;
-    let vote_info = provider.get_vote(owner, intent.intent_hash).await?;
+    let vote_info = provider
+        .get_vote(owner, intent.intent_hash)
+        .await
+        .map_err(map_err_logged!(ExmErr::GetVoteErr))?;
     println!("after {label} vote_info: {vote_info:?}");
     Ok(vote_info.2)
 }
@@ -127,7 +145,10 @@ async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<()
     let (wallet, payer) = build_submit_wallet(owner)?;
     let provider = rpc.provider.with_wallet_filler(WalletFiller::new(wallet));
 
-    let faucet_result = provider.claim_faucet_with_cooldown_remaining().await?;
+    let faucet_result = provider
+        .claim_faucet_with_cooldown_remaining()
+        .await
+        .map_err(map_err_logged!(ExmErr::ClaimFaucetWithCooldownRemaining))?;
     println!("submit claim_faucet result: {faucet_result:?}");
     if faucet_result.is_some() {
         time::sleep(Duration::from_secs(1)).await;
@@ -138,7 +159,10 @@ async fn submit(rpc: &DemoRpc, owner: Address, intent: &VoteIntent) -> Result<()
     let request = TransactionRequest::new(vec![intent.packed_ix.clone()])?
         .with_payer(payer)
         .with_signing_plan(plan);
-    let tx_hash = provider.send_voted_transaction(request).await?;
+    let tx_hash = provider
+        .send_voted_transaction(request)
+        .await
+        .map_err(map_err_logged!(ExmErr::SendVotedTransactionErr))?;
     println!("submit tx_hash: {tx_hash}");
 
     let raw: Vec<u8> = wait_for_get_txn(&provider, tx_hash).await?;
@@ -232,7 +256,10 @@ async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let wallet = LocalWallet::new(owner_signer);
     let provider = provider.with_wallet_filler(WalletFiller::new(wallet));
 
-    let res = provider.claim_faucet_with_cooldown_remaining().await?;
+    let res = provider
+        .claim_faucet_with_cooldown_remaining()
+        .await
+        .map_err(map_err_logged!(ExmErr::ClaimFaucetWithCooldownRemaining))?;
     println!("{owner} claim_faucet result: {res:?}");
     if res.is_some() {
         time::sleep(Duration::from_secs(1)).await;
@@ -244,11 +271,17 @@ async fn create_multisig(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
         pk2_signer.public_key().clone(),
         pk3_signer.public_key().clone(),
     ];
-    let res = provider.create_multisig(pks, vec![1, 1, 2, 3], 5).await?;
+    let res = provider
+        .create_multisig(pks, vec![1, 1, 2, 3], 5)
+        .await
+        .map_err(map_err_logged!(ExmErr::CreateMultisigErr))?;
     println!("create_multisig tx_hash: {res}");
     time::sleep(Duration::from_secs(1)).await;
 
-    let signers = provider.list_signers(owner).await?;
+    let signers = provider
+        .list_signers(owner)
+        .await
+        .map_err(map_err_logged!(ExmErr::ListSignersErr))?;
     println!("multisig list_signers = {signers:?}");
     Ok(())
 }

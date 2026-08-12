@@ -1,3 +1,4 @@
+use infra_tracing::{LoggerGuard, tests::setup_logger};
 use milon_client::{self as sdk, account, reliable_transport, token};
 use milon_crypto::{Address, PublicKey};
 use milon_idl_core::{Method, Signer as InstructionSigner};
@@ -18,6 +19,7 @@ use std::{
 use url::Url;
 
 pub mod decode_print;
+pub mod errors;
 mod signer;
 pub use signer::*;
 
@@ -28,6 +30,10 @@ const CONFIRM_RETRY_ATTEMPTS: usize = 10;
 const CONFIRM_RETRY_DELAY: Duration = Duration::from_millis(500);
 
 pub type LocalProvider = FillProvider<RecommendedFillers, NoTerminal, RootProvider>;
+
+pub fn init() -> anyhow::Result<LoggerGuard> {
+    setup_logger()
+}
 
 pub fn mil_token_address() -> Address {
     Address::from_bytes(&[
