@@ -1,5 +1,5 @@
 use infra_tracing::{LoggerGuard, tests::setup_logger};
-use milon_client::{self as sdk, account, reliable_transport, token};
+use milon_client::{self as sdk, account, indexer, reliable_transport, token};
 use milon_crypto::{Address, PublicKey};
 use milon_idl_core::{Method, Signer as InstructionSigner};
 use milon_primitives::{ChainId, TxHash};
@@ -64,6 +64,17 @@ pub fn build_provider(rpc_url: &str) -> Result<LocalProvider, Box<dyn Error>> {
     let client = RpcClient::builder().transport(reliable_transport(transport), false);
     let provider = ProviderBuilder::new().connect_client(client);
     Ok(provider)
+}
+
+const INDEXER_API_ROOT: &str = "/v1/milon-idx/";
+pub fn connect_indexer(
+    indexer_url: &str,
+) -> Result<impl milon_client::indexer::Provider, Box<dyn Error>> {
+    let origin = Url::parse(indexer_url)?;
+    let transport = indexer::HttpTransport::new(origin, INDEXER_API_ROOT)?;
+    let client = indexer::HttpClient::builder().transport(indexer::reliable_transport(transport));
+
+    Ok(indexer::ProviderBuilder::new().connect_client(client))
 }
 
 pub fn claim_faucet(claimer: Address) -> Result<sdk::PackedInstruction, sdk::idl_core::Error> {
