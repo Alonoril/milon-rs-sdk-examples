@@ -1,8 +1,7 @@
 use milon_client::token;
 use milon_crypto::Address;
-use milon_idl_core::{Method, Token};
-use milon_primitives::PackedInstruction;
-use milon_provider::{IdlProviderExt, ProviderBuilder, ViewResult};
+use milon_idl_core::Token;
+use milon_provider::{DynMulticall, IdlProviderExt, ProviderBuilder, ViewResult};
 use milon_rpc_client::RpcClient;
 use milon_transport::http::HttpInvokeTransport;
 use std::{env, error::Error};
@@ -30,27 +29,36 @@ fn connect_provider(rpc_url: &str) -> Result<impl milon_provider::Provider, Box<
 
 fn build_calls(
     input: &MultiCallInput,
-) -> Result<(Vec<&'static str>, Vec<PackedInstruction>), Box<dyn Error>> {
+) -> Result<(Vec<&'static str>, DynMulticall), Box<dyn Error>> {
     let names = vec![
         "token::BalanceOf",
         // "token::FrozenOf",
         "token::TotalSupply",
         "token::GetMetadata",
     ];
-    let calls = vec![
-        token::BalanceOf {
-            token: input.token,
-            account: input.account,
-        }
-        .pack()?,
-        // token::FrozenOf {
-        //     token: input.token,
-        //     account: input.account,
-        // }
-        // .pack()?,
-        token::TotalSupply { token: input.token }.pack()?,
-        token::GetMetadata { token: input.token }.pack()?,
-    ];
+
+    // let calls = vec![
+    //     token::BalanceOf {
+    //         token: input.token,
+    //         account: input.account,
+    //     }
+    //     .pack()?,
+    //     // token::FrozenOf {
+    //     //     token: input.token,
+    //     //     account: input.account,
+    //     // }
+    //     // .pack()?,
+    //     token::TotalSupply { token: input.token }.pack()?,
+    //     token::GetMetadata { token: input.token }.pack()?,
+    // ];
+
+    let mut calls = DynMulticall::new();
+    calls.add(token::BalanceOf {
+        token: input.token,
+        account: input.account,
+    })?;
+    calls.add(token::TotalSupply { token: input.token })?;
+    calls.add(token::GetMetadata { token: input.token })?;
     Ok((names, calls))
 }
 
