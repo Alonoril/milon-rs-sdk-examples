@@ -1,7 +1,7 @@
+use milon_client::token;
 use milon_crypto::Address;
 use milon_provider::{IdlProviderExt, ProviderBuilder, ViewResult};
 use milon_rpc_client::RpcClient;
-use milon_client::token;
 use milon_transport::http::HttpInvokeTransport;
 use std::{env, error::Error};
 use url::Url;

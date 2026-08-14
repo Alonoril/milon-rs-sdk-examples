@@ -2,7 +2,6 @@ use milon_idl_core::{Address, Detokenize, NamedToken, Token, Tokenizable as _};
 use milon_idl_macro::Tokenizable;
 use milon_primitives::AnySigner;
 use std::collections::BTreeMap;
-use milon_client::types::RpcEncode;
 
 #[derive(Clone, Debug, PartialEq, Eq, Tokenizable)]
 struct Inner {

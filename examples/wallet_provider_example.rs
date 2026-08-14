@@ -7,9 +7,9 @@ use milon_local_wallet::{
 use milon_primitives::PackedInstruction;
 use milon_provider::{Provider, SendableTransaction, TransactionRequest};
 use only_sdk_examples::{
-    LocalProvider,
+    LocalProvider, build_provider,
     decode_print::{print_decoded_instructions, print_simulate_receipt, print_transaction_history},
-    local_ed25519_signer, mil_token_address, build_provider, wait_for_get_txn,
+    local_ed25519_signer, mil_token_address, wait_for_get_txn,
 };
 use std::{env, error::Error};
 

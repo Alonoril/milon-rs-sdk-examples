@@ -1,9 +1,7 @@
+use milon_client::token;
 use milon_crypto::Address;
-use milon_idl_core::{Method, Token};
-use milon_primitives::PackedInstruction;
 use milon_provider::{IdlProviderExt, ProviderBuilder, ViewResult};
 use milon_rpc_client::RpcClient;
-use milon_client::token;
 use milon_transport::http::HttpInvokeTransport;
 use std::{env, error::Error};
 use url::Url;
@@ -15,10 +13,19 @@ const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
 async fn main() -> Result<(), Box<dyn Error>> {
     let input = MultiCallInput::from_env()?;
     let provider = connect_provider(&input.rpc_url)?;
-    let (names, calls) = build_calls(&input)?;
-    let outputs = provider.multicall(calls).await?;
+    let calls = (
+        token::BalanceOf {
+            token: input.token,
+            account: input.account,
+        },
+        token::TotalSupply { token: input.token },
+        token::GetMetadata { token: input.token },
+    );
 
-    print_outputs(&names, &outputs)?;
+    let (balance, total_supply, metadata) = provider.multicall(calls).await?;
+    print_output("token::BalanceOf", &balance)?;
+    print_output("token::TotalSupply", &total_supply)?;
+    print_output("token::GetMetadata", &metadata)?;
     Ok(())
 }
 
@@ -28,36 +35,11 @@ fn connect_provider(rpc_url: &str) -> Result<impl milon_provider::Provider, Box<
     Ok(ProviderBuilder::new().connect_client(client))
 }
 
-fn build_calls(
-    input: &MultiCallInput,
-) -> Result<(Vec<&'static str>, Vec<PackedInstruction>), Box<dyn Error>> {
-    let names = vec![
-        "token::BalanceOf",
-        // "token::FrozenOf",
-        "token::TotalSupply",
-        "token::GetMetadata",
-    ];
-    let calls = vec![
-        token::BalanceOf {
-            token: input.token,
-            account: input.account,
-        }
-        .pack()?,
-        // token::FrozenOf {
-        //     token: input.token,
-        //     account: input.account,
-        // }
-        // .pack()?,
-        token::TotalSupply { token: input.token }.pack()?,
-        token::GetMetadata { token: input.token }.pack()?,
-    ];
-    Ok((names, calls))
-}
-
-fn print_outputs(names: &[&str], outputs: &[ViewResult<Token>]) -> Result<(), Box<dyn Error>> {
-    for (name, output) in names.iter().zip(outputs) {
-        println!("{name}: {}", serde_json::to_string_pretty(output)?);
-    }
+fn print_output<T>(name: &str, output: &ViewResult<T>) -> Result<(), Box<dyn Error>>
+where
+    T: serde::Serialize,
+{
+    println!("{name}: {}", serde_json::to_string_pretty(output)?);
     Ok(())
 }
 
@@ -66,7 +48,6 @@ struct MultiCallInput {
     rpc_url: String,
     token: Address,
     account: Address,
-    validator: Address,
 }
 
 impl MultiCallInput {
@@ -75,7 +56,6 @@ impl MultiCallInput {
             rpc_url: env::var("MILON_RPC_URL").unwrap_or_else(|_| DEFAULT_HTTP_RPC_URL.to_owned()),
             token: env_address("MILON_TOKEN_ADDRESS", default_mil_token_address())?,
             account: env_address("MILON_ACCOUNT_ADDRESS", default_account_address())?,
-            validator: env_address("MILON_VALIDATOR_ADDRESS", default_validator_address())?,
         })
     }
 }
@@ -98,10 +78,5 @@ fn default_mil_token_address() -> Address {
 
 fn default_account_address() -> Address {
     // Address::from_bytes(&[11_u8; 20]).expect("default account address has 20 bytes")
-    Address::from_bs58("214RxzUxqRR1P4M5Hjw5mstr1Xs8").unwrap()
-}
-
-fn default_validator_address() -> Address {
-    // Address::from_bytes(&[12_u8; 20]).expect("default validator address has 20 bytes")
     Address::from_bs58("214RxzUxqRR1P4M5Hjw5mstr1Xs8").unwrap()
 }

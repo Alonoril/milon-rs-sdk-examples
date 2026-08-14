@@ -1,5 +1,5 @@
-use milon_provider::Provider;
 use milon_client::{self as sdk, primitives::TxHash};
+use milon_provider::Provider;
 use only_sdk_examples::{DemoRpc, decode_print::print_transaction_history};
 use std::{env, error::Error};
 
@@ -58,8 +58,8 @@ fn parse_tx_hash_hex(value: &str) -> Result<TxHash, Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
-    use milon_idl_core::{NamedToken, Token};
     use milon_client::demo;
+    use milon_idl_core::{NamedToken, Token};
     use only_sdk_examples::decode_print::decode_inline_resource;
 
     #[test]
