@@ -452,7 +452,7 @@ async fn transfer_from_with_ixs(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
         },
     ];
     let balance_of = provider
-        .multicall2(view_methods.clone())
+        .typed_multicall(view_methods.clone())
         .await
         .map_err(map_err_logged!(ExmErr::Multicall2Err))?;
     println!(">>>>>> before balance-of: {balance_of:?}");
@@ -492,7 +492,7 @@ async fn transfer_from_with_ixs(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     let raw: Vec<u8> = wait_for_get_txn(&provider, tx_hash).await?;
 
     let balance_of = provider
-        .multicall2(view_methods)
+        .typed_multicall(view_methods)
         .await
         .map_err(map_err_logged!(ExmErr::Multicall2Err))?;
     println!(">>>>>> after balance-of: {balance_of:?}");

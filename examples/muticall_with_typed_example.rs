@@ -14,7 +14,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let input = MultiCallInput::from_env()?;
     let provider = connect_provider(&input.rpc_url)?;
     let (names, calls) = build_calls()?;
-    let outputs: Vec<ViewResult<u64>> = provider.multicall2(calls).await?;
+    let outputs: Vec<ViewResult<u64>> = provider.typed_multicall(calls).await?;
 
     print_outputs(&names, &outputs)?;
     Ok(())
