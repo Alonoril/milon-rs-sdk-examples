@@ -2,9 +2,7 @@ use milon_client::indexer::{
     self as indexer, B256, IndexerTransactionExt, Provider, TransactionQuery,
 };
 use only_sdk_examples::{connect_indexer, init};
-use std::{env, error::Error, time::Duration};
-use tokio::time::timeout;
-use url::Url;
+use std::{env, error::Error};
 
 // const DEFAULT_INDEXER_URL: &str = "http://127.0.0.1:6088";
 const DEFAULT_INDEXER_URL: &str = "http://47.84.39.153:6088";
