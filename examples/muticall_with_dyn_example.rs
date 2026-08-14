@@ -1,8 +1,7 @@
 use milon_client::token;
 use milon_crypto::Address;
-use milon_idl_core::{Method, Token};
-use milon_primitives::PackedInstruction;
-use milon_provider::{IdlProviderExt, ProviderBuilder, ViewResult};
+use milon_idl_core::Token;
+use milon_provider::{DynMethod, IdlProviderExt, ProviderBuilder, ViewResult};
 use milon_rpc_client::RpcClient;
 use milon_transport::http::HttpInvokeTransport;
 use std::{env, error::Error};
@@ -15,7 +14,7 @@ const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
 async fn main() -> Result<(), Box<dyn Error>> {
     let input = MultiCallInput::from_env()?;
     let provider = connect_provider(&input.rpc_url)?;
-    let (names, calls) = build_calls(&input)?;
+    let (names, calls) = build_calls(&input);
     let outputs = provider.dyn_multicall(calls).await?;
 
     print_outputs(&names, &outputs)?;
@@ -28,9 +27,7 @@ fn connect_provider(rpc_url: &str) -> Result<impl milon_provider::Provider, Box<
     Ok(ProviderBuilder::new().connect_client(client))
 }
 
-fn build_calls(
-    input: &MultiCallInput,
-) -> Result<(Vec<&'static str>, Vec<PackedInstruction>), Box<dyn Error>> {
+fn build_calls(input: &MultiCallInput) -> (Vec<&'static str>, Vec<DynMethod>) {
     let names = vec![
         "token::BalanceOf",
         // "token::FrozenOf",
@@ -38,20 +35,18 @@ fn build_calls(
         "token::GetMetadata",
     ];
     let calls = vec![
-        token::BalanceOf {
+        DynMethod::new(token::BalanceOf {
             token: input.token,
             account: input.account,
-        }
-        .pack()?,
-        // token::FrozenOf {
+        }),
+        // DynMethod::new(token::FrozenOf {
         //     token: input.token,
         //     account: input.account,
-        // }
-        // .pack()?,
-        token::TotalSupply { token: input.token }.pack()?,
-        token::GetMetadata { token: input.token }.pack()?,
+        // }),
+        DynMethod::new(token::TotalSupply { token: input.token }),
+        DynMethod::new(token::GetMetadata { token: input.token }),
     ];
-    Ok((names, calls))
+    (names, calls)
 }
 
 fn print_outputs(names: &[&str], outputs: &[ViewResult<Token>]) -> Result<(), Box<dyn Error>> {
