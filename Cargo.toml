@@ -17,8 +17,8 @@ milon_local_wallet = { package = "milon_local_wallet", path = "../milon-sdk-rs/l
 milon_provider = { package = "milon_provider", path = "../milon-sdk-rs/provider" }
 milon_primitives = { package = "milon_primitives", path = "../milon-sdk-rs/primitives" }
 milon_rpc_client = { package = "milon_rpc_client", path = "../milon-sdk-rs/rpc-client" }
-milon_transport = { package = "milon_transport", path = "../milon-sdk-rs/transport" }
-milon-client = { package = "milon-client", path = "../milon-sdk-rs/milon-client" }
+milon_transport = { package = "milon_transport", path = "../milon-sdk-rs/transport", features = ["grpc"] }
+milon-client = { package = "milon-client", path = "../milon-sdk-rs/milon-client", features = ["grpc"] }
 
 milon_wallet = { package = "milon_wallet", path = "../../Milon/crates/wallet" }
 milon_crypto = { package = "milon_crypto", path = "../../Milon/crates/crypto" }
