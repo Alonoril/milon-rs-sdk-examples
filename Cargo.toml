@@ -23,8 +23,8 @@ milon-client = { package = "milon-client", path = "../milon-sdk-rs/milon-client"
 milon_wallet = { package = "milon_wallet", path = "../../Milon/crates/wallet" }
 milon_crypto = { package = "milon_crypto", path = "../../Milon/crates/crypto" }
 
-infra-core = { path = "../../milon-indexer/crates/infra-core" }
-infra-tracing = { path = "../../milon-indexer/crates/infra-tracing", features = ["test-utils"] }
+infra-core = { path = "../../app-infra/infra-core" }
+infra-tracing = { path = "../../app-infra/infra-tracing", features = ["test-utils"] }
 
 anyhow = "1"
 tracing = "0.1"
