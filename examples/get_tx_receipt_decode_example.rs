@@ -1,9 +1,9 @@
+use infra_tracing::tests::setup_logger;
 use milon_client::{self as sdk, primitives::TxHash};
 use milon_provider::Provider;
 use only_sdk_examples::{DemoRpc, decode_print::print_transaction_history};
 use std::{env, error::Error};
-use infra_tracing::tests::setup_logger;
-use tracing::info;
+use tracing::{Level, info};
 
 // const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/milon/v1";
 const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
@@ -11,7 +11,7 @@ const DEFAULT_TX_HASH_BS58: &str = "41oBTAkLq4czpy9oQFjSsyFtRQvpKMPWt6PzyDzv4hA3
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
-    let _ss = setup_logger()?;
+    let _ss = setup_logger(Level::INFO)?;
     let rpc_url = env::var("MILON_RPC_URL").unwrap_or_else(|_| DEFAULT_HTTP_RPC_URL.to_owned());
     let rpc = DemoRpc::connect(&rpc_url)?;
 

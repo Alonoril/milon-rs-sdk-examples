@@ -16,6 +16,7 @@ use std::{
     fs, thread,
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
+use tracing::Level;
 use url::Url;
 
 pub mod decode_print;
@@ -32,7 +33,7 @@ const CONFIRM_RETRY_DELAY: Duration = Duration::from_millis(500);
 pub type LocalProvider = FillProvider<RecommendedFillers, NoTerminal, RootProvider>;
 
 pub fn init() -> anyhow::Result<LoggerGuard> {
-    setup_logger()
+    setup_logger(Level::INFO)
 }
 
 pub fn mil_token_address() -> Address {
