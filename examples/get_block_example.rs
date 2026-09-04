@@ -17,7 +17,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let chain_state = rpc.provider.get_chain_head().await?;
     info!("chain_head: {chain_state}");
 
-    let res = rpc.provider.get_block_by_height(191).await?;
+    let res = rpc.provider.get_block_by_height(410).await?;
     info!("get_block_by_height: {res}");
 
     Ok(())
