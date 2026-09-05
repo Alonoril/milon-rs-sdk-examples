@@ -67,7 +67,7 @@ pub fn build_provider(rpc_url: &str) -> Result<LocalProvider, Box<dyn Error>> {
     Ok(provider)
 }
 
-const INDEXER_API_ROOT: &str = "/v1/milon-idx/";
+const INDEXER_API_ROOT: &str = "/v1/idx/";
 pub fn connect_indexer(
     indexer_url: &str,
 ) -> Result<impl milon_client::indexer::Provider, Box<dyn Error>> {

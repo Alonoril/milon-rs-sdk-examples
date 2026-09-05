@@ -4,8 +4,12 @@ use milon_primitives::{B160, B256};
 use only_sdk_examples::local_ed25519_signer;
 
 fn main() {
-    let res = local_ed25519_signer(202).expect("Failed to create signer");
-    println!("Local ED25519 signature: {:?}", res.address());
+    let res = local_ed25519_signer(1).expect("Failed to create signer");
+    let res = local_ed25519_signer(2).expect("Failed to create signer");
+    let res = local_ed25519_signer(3).expect("Failed to create signer");
+    let res = local_ed25519_signer(4).expect("Failed to create signer");
+    let res = local_ed25519_signer(5).expect("Failed to create signer");
+    // println!("Local ED25519 signature: {:?}", res.address());
 
     // parse_puk();
 }
