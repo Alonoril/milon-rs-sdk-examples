@@ -13,7 +13,7 @@ use std::{error::Error, time::Duration};
 use tokio::{time, time::timeout};
 
 // const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/milon/v1";
-const DEFAULT_HTTP_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
+const DEFAULT_HTTP_RPC_URL: &str = "http://8.218.101.239:6280/milon/v1";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -22,8 +22,8 @@ async fn main() -> Result<(), Box<dyn Error>> {
 
     // balance_of(&rpc).await?;
     // create_token(&rpc).await?;
-    // get_metadata(&rpc).await?;
-    mint(&rpc).await?;
+    get_metadata(&rpc).await?;
+    // mint(&rpc).await?;
     // burn(&rpc).await?;
     // transfer(&rpc).await?;
 
