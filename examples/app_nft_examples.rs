@@ -1,4 +1,4 @@
-use milon_client::{self as sdk, WalletFiller, nft, reliable_grpc_transport};
+use milon_client::{self as sdk, TokenProviderExt, WalletFiller, nft, reliable_grpc_transport};
 use milon_crypto::{Address, secretkey::SecretKey};
 use milon_idl_core::{Method, Signer as InstructionSigner};
 use milon_local_wallet::{
@@ -15,11 +15,12 @@ use only_sdk_examples::{
     init, local_ed25519_signer, wait_for_get_txn,
 };
 use std::{env, error::Error, time::Duration};
+use tokio::time;
 use tracing::info;
 
 const BATCH_SEED: u64 = 2;
-const DEFAULT_GRPC_URL: &str = "http://127.0.0.1:50051";
-// const DEFAULT_GRPC_URL: &str = "http://8.218.101.239:50051";
+// const DEFAULT_GRPC_URL: &str = "http://127.0.0.1:50051";
+const DEFAULT_GRPC_URL: &str = "http://8.218.101.239:50051";
 
 /// Run with:
 ///
@@ -60,8 +61,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let mut wallet = LocalWallet::new(owner_signer);
     wallet.register_signer(collection_signer)?;
     let provider = base_provider.with_wallet_filler(WalletFiller::new(wallet));
+    let res = provider.claim_faucet_with_cooldown_remaining().await?;
+    time::sleep(Duration::from_secs(1)).await;
+    let _ = res.map_or((), |s| {
+        info!("claim_faucet returned: {res:?}");
+    });
+
     let request = build_nft_request(collection, owner, recipient)?;
-    print_decoded_instructions(request.instructions());
+    // print_decoded_instructions(request.instructions());
 
     let sendable = provider.fill(request.clone()).await?;
     let transaction = match sendable {
@@ -72,18 +79,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
     info!(tx_hash = %transaction.tx_hash(), "local NFT transaction prepared");
 
-    let response = provider.simulate_transaction(transaction).await?;
-    let receipt = sdk::decode_transaction_response(&response)?;
-    print_simulate_receipt(&receipt);
+    // let response = provider.simulate_transaction(transaction).await?;
+    // let receipt = sdk::decode_transaction_response(&response)?;
+    // print_simulate_receipt(&receipt);
 
-    if env::var_os("MILON_NFT_SUBMIT").is_some() {
-        let tx_hash = provider.send_transaction(request).await?;
-        println!("NFT submit tx_hash: {tx_hash}");
-        let raw = wait_for_get_txn(&provider, tx_hash).await?;
-        let history = sdk::decode_transaction_history(&raw)?;
-        print_transaction_history(&history);
-    }
-
+    let tx_hash = provider.send_transaction(request).await?;
+    println!(">>>>>>>>>NFT submit tx_hash: {tx_hash}");
+    let raw = wait_for_get_txn(&provider, tx_hash).await?;
+    let history = sdk::decode_transaction_history(&raw)?;
+    print_transaction_history(&history);
     Ok(())
 }
 

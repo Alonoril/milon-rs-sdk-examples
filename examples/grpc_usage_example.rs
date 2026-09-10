@@ -9,7 +9,7 @@ use std::{env, error::Error, time::Duration};
 use tracing::info;
 
 const DEFAULT_GRPC_URL: &str = "http://127.0.0.1:50051";
-// const DEFAULT_GRPC_URL: &str = "http://47.84.39.153:50051";
+// const DEFAULT_GRPC_URL: &str = "http://8.218.101.239:50051";
 
 /// Run with:
 ///
