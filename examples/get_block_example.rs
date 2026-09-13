@@ -5,8 +5,8 @@ use only_sdk_examples::{DemoRpc, decode_print::print_transaction_history};
 use std::{env, error::Error};
 use tracing::{Level, info};
 
-const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/milon/v1";
-// const DEFAULT_HTTP_RPC_URL: &str = "http://8.218.101.239:6280/milon/v1";
+const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/v1/rpc";
+// const DEFAULT_HTTP_RPC_URL: &str = "http://8.218.101.239:6280/v1/rpc";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
