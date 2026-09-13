@@ -508,5 +508,6 @@ fn metadata() -> token::Metadata {
         symbol: "Test".to_owned(),
         decimals: 6,
         icon: "https://milon.com/test_icon.png".to_owned(),
+        uri: "https://milon.com/test.json".to_owned(),
     }
 }

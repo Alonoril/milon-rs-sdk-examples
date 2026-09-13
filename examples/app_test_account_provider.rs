@@ -720,5 +720,6 @@ fn metadata() -> token::Metadata {
         symbol: "EGL".to_owned(),
         decimals: 9,
         icon: "https://milon.com/egl_icon.png".to_owned(),
+        uri: "https://milon.com/egl.json".to_owned(),
     }
 }
