@@ -1,4 +1,4 @@
-use milon_client::{self as sdk, WalletFiller, demo, token};
+use milon_client::{self as sdk, TokenProviderExt, WalletFiller, demo, token};
 use milon_crypto::{Address, secretkey::SecretKey};
 use milon_idl_core::{Method, Signer as InstructionSigner};
 use milon_local_wallet::{
@@ -11,10 +11,11 @@ use only_sdk_examples::{
     decode_print::{print_decoded_instructions, print_simulate_receipt, print_transaction_history},
     local_ed25519_signer, mil_token_address, wait_for_get_txn,
 };
-use std::{env, error::Error};
+use std::{env, error::Error, time::Duration};
+use tokio::time::sleep;
 
-// const DEFAULT_RPC_URL: &str = "http://127.0.0.1:6380/milon/v1";
-const DEFAULT_RPC_URL: &str = "http://47.84.39.153:6280/milon/v1";
+// const DEFAULT_RPC_URL: &str = "http://127.0.0.1:6280/v1/rpc";
+const DEFAULT_RPC_URL: &str = "http://8.218.101.239:6280/v1/rpc";
 
 type WalletProvider = milon_provider::FillProvider<
     milon_provider::RecommendedFillers,
@@ -39,10 +40,13 @@ async fn main() -> Result<(), Box<dyn Error>> {
     println!("local tx_hash: {}", transaction.tx_hash());
     print_decoded_instructions(transaction.instructions());
 
+    let res = provider.claim_faucet_with_cooldown_remaining().await?;
+    sleep(Duration::from_secs(1)).await;
+    println!("response: {:?}", res);
+
     let response = provider.simulate_transaction(transaction).await?;
     let receipt = sdk::decode_transaction_response(&response)?;
     print_simulate_receipt(&receipt);
-
     // Re-run the same filler pipeline and submit the resulting signed transaction.
     let tx_hash = provider.send_transaction(request).await?;
     println!(">>>>>>>>>>>>>submit tx_hash: {tx_hash}");
