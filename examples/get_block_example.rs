@@ -19,13 +19,14 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("chain_head: {chain_state}");
 
     let res = rpc.provider.get_block_by_height(chain_state.block_height).await?;
-    // let res = rpc.provider.get_block_by_height(56).await?;
-    // info!("get_block_by_height: {res}");
-    // let res = rpc.provider.get_block_by_height(57).await?;
-    // info!("get_block_by_height: {res}");
-    // let res = rpc.provider.get_block_by_height(58).await?;
-    // info!("get_block_by_height: {res}");
-    // let res = rpc.provider.get_block_by_height(59).await?;
+    info!("get_block_by_height: {res}");
+    let res = rpc.provider.get_block_by_height(56).await?;
+    info!("get_block_by_height: {res}");
+    let res = rpc.provider.get_block_by_height(57).await?;
+    info!("get_block_by_height: {res}");
+    let res = rpc.provider.get_block_by_height(58).await?;
+    info!("get_block_by_height: {res}");
+    let res = rpc.provider.get_block_by_height(59).await?;
     info!("get_block_by_height: {res}");
 
     Ok(())

@@ -6,8 +6,8 @@ use std::{env, error::Error};
 use tracing::{Level, info};
 
 // const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/milon/v1";
-const DEFAULT_HTTP_RPC_URL: &str = "http://8.218.101.239:6280/milon/v1";
-const DEFAULT_TX_HASH_BS58: &str = "Gktrqa8t4D37vwiNRTcfF99tKwgz94DXxMnX7pfrvfMu";
+const DEFAULT_HTTP_RPC_URL: &str = "http://8.218.101.239:6280/v1/rpc";
+const DEFAULT_TX_HASH_BS58: &str = "45rz4RD3jjRt3o4TBam8p7doxFNCnGdCkcNFuNnNrZMv";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
