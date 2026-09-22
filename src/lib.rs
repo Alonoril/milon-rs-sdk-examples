@@ -8,7 +8,7 @@ use milon_provider::{
     RootProvider,
 };
 use milon_rpc_client::RpcClient;
-use milon_transport::http::HttpInvokeTransport;
+use milon_transport::{grpc::GrpcTransportConfig, http::HttpInvokeTransport};
 use serde::{Deserialize, Serialize};
 use std::{
     env,
@@ -42,6 +42,29 @@ pub fn mil_token_address() -> Address {
         0x6F, 0x7C, 0x40, 0x00, 0x00,
     ])
     .expect("MIL token address has 20 bytes")
+}
+
+pub fn build_grpc_config(endpoint: String) -> Result<GrpcTransportConfig, Box<dyn Error>> {
+    let mut config = GrpcTransportConfig::new(endpoint)
+        .with_connect_timeout(Duration::from_secs(5))
+        .with_request_timeout(Duration::from_secs(10))
+        .with_read_timeout(Duration::from_secs(10))
+        .with_simulation_timeout(Duration::from_secs(20))
+        .with_submit_timeout(Duration::from_secs(30))
+        .with_max_concurrent_requests(64)
+        .with_http2_keep_alive_interval(Some(Duration::from_secs(30)));
+
+    if let Ok(path) = env::var("MILON_GRPC_CA_FILE") {
+        config = config.with_tls_ca(std::fs::read(path)?);
+    }
+    if let Ok(domain) = env::var("MILON_GRPC_TLS_DOMAIN") {
+        config = config.with_tls_domain(domain);
+    }
+    if let Ok(traceparent) = env::var("MILON_TRACEPARENT") {
+        config = config.with_traceparent(traceparent);
+    }
+
+    Ok(config)
 }
 
 pub struct DemoRpc {

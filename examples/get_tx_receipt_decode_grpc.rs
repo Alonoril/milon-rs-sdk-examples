@@ -13,7 +13,7 @@ use tracing::{Level, info};
 // const DEFAULT_GRPC_URL: &str = "http://127.0.0.1:50051";
 const DEFAULT_GRPC_URL: &str = "http://8.218.101.239:50051";
 // const DEFAULT_TX_HASH_BS58: &str = "B7UyYPhBC1pwvrhkQ5WSQhq2FA3aGfcpsL7U95ABJhgz";
-const DEFAULT_TX_HASH_BS58: &str = "3JKuZoduMR8uTW9pvmFmZLTpJVgLaMxDViTwWJPzn6zX";
+const DEFAULT_TX_HASH_BS58: &str = "B7UyYPhBC1pwvrhkQ5WSQhq2FA3aGfcpsL7U95ABJhgz";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {

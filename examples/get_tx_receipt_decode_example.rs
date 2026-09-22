@@ -1,13 +1,15 @@
+use infra_core::map_err_logged;
 use infra_tracing::tests::setup_logger;
 use milon_client::{self as sdk, primitives::TxHash};
 use milon_provider::Provider;
-use only_sdk_examples::{DemoRpc, decode_print::print_transaction_history};
+use only_sdk_examples::{DemoRpc, decode_print::print_transaction_history, errors::ExmErr};
 use std::{env, error::Error};
 use tracing::{Level, info};
 
 // const DEFAULT_HTTP_RPC_URL: &str = "http://127.0.0.1:6280/milon/v1";
 const DEFAULT_HTTP_RPC_URL: &str = "http://8.218.101.239:6280/v1/rpc";
-const DEFAULT_TX_HASH_BS58: &str = "45rz4RD3jjRt3o4TBam8p7doxFNCnGdCkcNFuNnNrZMv";
+// const DEFAULT_TX_HASH_BS58: &str = "B7UyYPhBC1pwvrhkQ5WSQhq2FA3aGfcpsL7U95ABJhgz";
+const DEFAULT_TX_HASH_BS58: &str = "3JKuZoduMR8uTW9pvmFmZLTpJVgLaMxDViTwWJPzn6zX";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -35,7 +37,8 @@ async fn get_transaction_history(rpc: &DemoRpc) -> Result<(), Box<dyn Error>> {
     //     )
     //     .await?;
     let raw: Vec<u8> = rpc.provider.get_transaction_by_hash(tx_hash).await?;
-    let history = sdk::decode_transaction_history(&raw)?;
+    let history =
+        sdk::decode_transaction_history(&raw).map_err(map_err_logged!(ExmErr::SdkDecodeErr))?;
     print_transaction_history(&history);
 
     Ok(())

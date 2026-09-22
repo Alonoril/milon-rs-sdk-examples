@@ -1,5 +1,6 @@
 infra_core::define_app_error_codes! {
     ExmErr("EXM") {
+        SdkDecodeErr = (1000, "SDK Decode Error"),
         ClaimFaucetWithCooldownRemaining = (1001, "claim_faucet_with_cooldown_remaining"),
         TokenMintErr = (1002, "Token mint error"),
         BalanceOfErr = (1003, "Query balance of error"),

@@ -4,7 +4,7 @@ use milon_rpc_client::RpcClient;
 use milon_transport::grpc::{
     GrpcHealthClient, GrpcInvokeTransport, GrpcTransportConfig, HealthStatus,
 };
-use only_sdk_examples::init;
+use only_sdk_examples::{build_grpc_config, init};
 use std::{env, error::Error, time::Duration};
 use tracing::info;
 
@@ -24,7 +24,7 @@ const DEFAULT_GRPC_URL: &str = "http://127.0.0.1:50051";
 async fn main() -> Result<(), Box<dyn Error>> {
     let _logger = init()?;
     let endpoint = env::var("MILON_GRPC_URL").unwrap_or_else(|_| DEFAULT_GRPC_URL.to_owned());
-    let config = build_config(endpoint)?;
+    let config = build_grpc_config(endpoint)?;
 
     // Health is optional, but it is useful at startup to verify the versioned
     // Milon RPC service before exposing the provider to application code.
@@ -52,25 +52,3 @@ async fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn build_config(endpoint: String) -> Result<GrpcTransportConfig, Box<dyn Error>> {
-    let mut config = GrpcTransportConfig::new(endpoint)
-        .with_connect_timeout(Duration::from_secs(5))
-        .with_request_timeout(Duration::from_secs(10))
-        .with_read_timeout(Duration::from_secs(10))
-        .with_simulation_timeout(Duration::from_secs(20))
-        .with_submit_timeout(Duration::from_secs(30))
-        .with_max_concurrent_requests(64)
-        .with_http2_keep_alive_interval(Some(Duration::from_secs(30)));
-
-    if let Ok(path) = env::var("MILON_GRPC_CA_FILE") {
-        config = config.with_tls_ca(std::fs::read(path)?);
-    }
-    if let Ok(domain) = env::var("MILON_GRPC_TLS_DOMAIN") {
-        config = config.with_tls_domain(domain);
-    }
-    if let Ok(traceparent) = env::var("MILON_TRACEPARENT") {
-        config = config.with_traceparent(traceparent);
-    }
-
-    Ok(config)
-}
