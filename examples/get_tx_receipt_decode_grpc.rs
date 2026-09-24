@@ -23,7 +23,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let chain_state = provider.get_chain_head().await?;
     info!("chain_head: {:?}", chain_state);
 
-    get_transaction_history(&provider).await?;
+    // get_transaction_history(&provider).await?;
 
     Ok(())
 }
